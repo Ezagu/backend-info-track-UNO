@@ -15,9 +15,13 @@ export const carreraResolver = () => {
         },
         Carrera: {
             materias: async (root: ICarrera) => {
-                const planEstudio = await PlanEstudio.find({carreraId: root.id}).populate('materiaId')
-                const materias = planEstudio.map(pe => pe.materiaId)
-                return materias
+                const planEstudio = await PlanEstudio.find({carreraId: root._id}).populate('materiaId').populate('correlativas')
+                return planEstudio.map(plan => ({
+                    materia: plan.materiaId,
+                    anio: plan.anio,
+                    cuatrimestre: plan.cuatrimestre,
+                    correlativas: plan.correlativas
+                }))
             }
         }
     }
