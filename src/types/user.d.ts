@@ -1,10 +1,12 @@
+import type { Types } from "mongoose"
+
 export type IUser = {
-  id: string
+  id: Types.ObjectId
   nombre: string
   apellido: string
   password: string
   email: string
-  role: string
+  rol: string
   materias: MateriaUser[]
   carreras: string[]
 }
@@ -12,7 +14,7 @@ export type IUser = {
 type MateriaUser = {
   materiaId: string
   estado: EstadoMateria
-  year: number
+  anio: number
   cuatrimestre: number
   llamadosUsados?: number | null
   vencimiento?: Date | null
