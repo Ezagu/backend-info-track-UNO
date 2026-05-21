@@ -24,4 +24,4 @@ const CarreraSchema = new Schema({
     }
 })
 
-export const Carrera = mongoose.model('Carrera', CarreraSchema)
+export const Carrera = mongoose.model('Carrera', CarreraSchema, 'carreras')

@@ -25,4 +25,4 @@ const PlanEstudioSchema = new Schema({
     }]
 })  
 
-export const PlanEstudio = mongoose.model('PlanEstudio', PlanEstudioSchema)
+export const PlanEstudio = mongoose.model('PlanEstudio', PlanEstudioSchema, "planestudios")

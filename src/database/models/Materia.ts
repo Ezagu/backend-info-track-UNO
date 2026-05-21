@@ -20,4 +20,4 @@ const MateriaSchema = new Schema({
     linkWhatsapp: String
 });
 
-export const Materia = mongoose.model('Materia', MateriaSchema);
+export const Materia = mongoose.model('Materia', MateriaSchema, 'materias');

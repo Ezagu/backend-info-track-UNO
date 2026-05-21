@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 const ComisionSchema = new Schema({
     materiaId: {
-        type: Schema.ObjectId,
+        type: String,
         ref: 'Materia',
         required: true
     },
@@ -42,4 +42,4 @@ const ComisionSchema = new Schema({
     }
 }); 
 
-export const Comision = mongoose.model('Comision', ComisionSchema);
+export const Comision = mongoose.model('Comision', ComisionSchema, 'comisiones');
