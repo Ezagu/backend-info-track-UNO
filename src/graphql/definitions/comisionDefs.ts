@@ -34,6 +34,7 @@ export const comisionDefs = () => {
     type Comision {
         id: ID!
         materia: Materia!
+        numero: Int!
         horarios: [Horario]!
         salon: Salon
         anio: Int!

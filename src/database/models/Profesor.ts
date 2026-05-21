@@ -34,7 +34,7 @@ const ProfesorSchema = new Schema({
         required: true
     },
     materias: [{
-        type: Schema.ObjectId,
+        type: String,
         ref: 'Materia'
     }]
 })

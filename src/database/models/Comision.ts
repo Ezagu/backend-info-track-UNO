@@ -6,6 +6,10 @@ const ComisionSchema = new Schema({
         ref: 'Materia',
         required: true
     },
+    numero: {
+        type: Number,
+        required: true
+    },
     horarios: [
         {
             dia: {
