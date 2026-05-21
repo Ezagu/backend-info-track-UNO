@@ -22,6 +22,9 @@ export const carreraResolver = () => {
                     cuatrimestre: plan.cuatrimestre,
                     correlativas: plan.correlativas
                 }))
+            },
+            cantidadMaterias: async(root: ICarrera) => {
+                return await PlanEstudio.countDocuments({carreraId: root._id})
             }
         }
     }
