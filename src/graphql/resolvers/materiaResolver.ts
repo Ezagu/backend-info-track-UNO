@@ -1,6 +1,7 @@
 import { Comision } from "../../database/models/Comision.js"
 import { Materia } from "../../database/models/Materia.js"
 import { PlanEstudio } from "../../database/models/PlanEstudio.js"
+import { Profesor } from "../../database/models/Profesor.js"
 import type { IMateria, SearchMateriaInput } from "../../types/materia.js"
 
 export const materiaResolver = () => {
@@ -52,6 +53,9 @@ export const materiaResolver = () => {
       comisiones: async (root: IMateria) => {
         // Encuentra todas las comisiones que le perteneces a la materia
         return await Comision.find({materiaId: root.id})
+      },
+      profesores: async (root: IMateria) => {
+        return await Profesor.find({materias: root.id})
       }
     }
   }

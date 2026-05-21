@@ -9,7 +9,6 @@ export const profesorDefs = () =>{
         type Profesor {
             id: ID!
             nombre: String!
-            apellido: String!
             email: String!
             linkCampus: String
             ratings: [Rating]

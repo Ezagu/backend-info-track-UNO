@@ -11,6 +11,7 @@ export const materiaDefs = () => {
       promocion: Boolean
       carreras: [Carrera]
       comisiones: [Comision]
+      profesores: [Profesor]
     }
 
     type Query {
