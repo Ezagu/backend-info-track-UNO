@@ -1,3 +1,4 @@
+import type { JwtPayload } from "./types/auth.js"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { ApolloServer } from "@apollo/server"
@@ -10,13 +11,10 @@ import { materiaResolver } from "./graphql/resolvers/materiaResolver.js"
 import { carreraDefs } from "./graphql/definitions/carreraDefs.js"
 import { comisionDefs } from "./graphql/definitions/comisionDefs.js"
 import { carreraResolver } from "./graphql/resolvers/carreraResolver.js"
-import { comisionResolver } from "./graphql/resolvers/comisionResolver.js"
 import { planEstudioDefs } from "./graphql/definitions/planEstudioDefs.js"
-import { planEstudioResolver } from "./graphql/resolvers/planEstudioResolver.js"
 import { profesorDefs } from "./graphql/definitions/profesorDefs.js"
 import { profesorResolver } from "./graphql/resolvers/profesorResolver.js"
 import { User } from "./database/models/User.js"
-import type { JwtPayload } from "./types/auth.js"
 
 connect()
 
@@ -35,8 +33,6 @@ const resolvers = [
   userResolver(),
   materiaResolver(),
   carreraResolver(),
-  comisionResolver(),
-  planEstudioResolver(),
   profesorResolver()
 ]
 
