@@ -2,13 +2,10 @@ import type { EstablecerEstadoMateria, EstadoMateria, LoginUser, MateriaUser, Re
 import type { Context } from "../../types/auth.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 import { GraphQLError } from "graphql"
 import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
-
-dotenv.config()
 
 export const userResolver = () => {
   return {
@@ -80,7 +77,7 @@ export const userResolver = () => {
           materiaId: data.idMateria,
           estado: data.estado as EstadoMateria,
           cuatrimestre: data.cuatrimestre,
-          year: data.year,
+          anio: data.year,
           notaFinal: null,
           llamadosUsados: null,
           vencimiento: null
@@ -89,7 +86,7 @@ export const userResolver = () => {
         // Agregar datos si el estado es regularizada
         if(data.estado === "REGULARIZADA") {
           newMateria.llamadosUsados = 0
-          newMateria.vencimiento = new Date(data.year + 2, data.cuatrimestre === 1 ? 7 : 12, 1)
+          newMateria.vencimiento = new Date(data.year + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
         }
 
         // Agregar datos si el estado es aprobada o promocionada
