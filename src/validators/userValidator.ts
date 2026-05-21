@@ -31,7 +31,7 @@ const EstadoMateria = z.object({
     .min(1, 'La nota mínima es 1')
     .max(10, 'La nota máxima es 10')
     .optional(),
-  year: z.number()
+  anio: z.number()
     .min(2009, 'Año inválido')
     .max(2026, 'Año inválido'),
   cuatrimestre: z.number()

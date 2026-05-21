@@ -44,7 +44,7 @@ export type LoginUser = {
 export type EstablecerEstadoMateria = {
   idMateria: string
   estado: EstadoMateria
-  year: number
+  anio: number
   cuatrimestre: number
   nota?: number | null
 }

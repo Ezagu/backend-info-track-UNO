@@ -40,7 +40,7 @@ export const userDefs = () => {
     type Mutation {
       registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String!): Usuario
       loguearUsuario(email: String!, password: String!): String
-      establecerEstadoMateria(idMateria: String!, estado: EstadoMateria!, year: Int!, cuatrimestre: Int!, nota: Int): Usuario
+      establecerEstadoMateria(idMateria: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
     }
   `
 }
