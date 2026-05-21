@@ -112,6 +112,11 @@ export const userResolver = () => {
         await user.save()
         return user
       }
+    },
+    MateriaUsuario: {
+      materia: async (root: MateriaUser) => {
+        return await Materia.findById(root.materiaId)
+      }
     }
   }
 }
