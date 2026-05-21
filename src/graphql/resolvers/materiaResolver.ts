@@ -1,3 +1,4 @@
+import { Comision } from "../../database/models/Comision.js"
 import { Materia } from "../../database/models/Materia.js"
 import { PlanEstudio } from "../../database/models/PlanEstudio.js"
 import type { IMateria, SearchMateriaInput } from "../../types/materia.js"
@@ -43,9 +44,14 @@ export const materiaResolver = () => {
     },
     Materia: {
       carreras: async (root: IMateria) => {
+        // Encuentra los planes de estudio (relacion entre carrera y materia) que se encuentra la materia
         const planEstudio = await PlanEstudio.find({materiaId: root.id}).populate("carreraId")
-        const carreras = planEstudio.map(pe => pe.carreraId)
-        return carreras
+        // Mapea las carreras y las retorna
+        return planEstudio.map(pe => pe.carreraId)
+      },
+      comisiones: async (root: IMateria) => {
+        // Encuentra todas las comisiones que le perteneces a la materia
+        return await Comision.find({materiaId: root.id})
       }
     }
   }

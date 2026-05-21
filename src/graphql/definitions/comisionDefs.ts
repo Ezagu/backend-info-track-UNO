@@ -21,8 +21,8 @@ export const comisionDefs = () => {
     }
 
     type Salon {
-      numero: Int!
-      tipo: SalonType!
+      numero: Int
+      tipo: SalonType
     }
 
     type Horario {
