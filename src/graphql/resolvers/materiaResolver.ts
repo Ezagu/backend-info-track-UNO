@@ -11,13 +11,12 @@ export const materiaResolver = () => {
         const {search = "", page = 1, limit = 10} = args
 
         // Filtramos con el search y hacemos paginación
-        // TODO: Parmitir busquedas sin tildes
         const materias = await Materia.find(
-          {nombre: {
+          {nombreNormalizado: {
             $regex: search,
             $options: 'i'
           }}
-        ).collation({locale: 'es', strength: 1})
+        )
         .skip((page-1) * limit)
         .limit(limit)
 

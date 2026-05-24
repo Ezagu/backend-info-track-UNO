@@ -6,6 +6,10 @@ const MateriaSchema = new Schema({
         type: String,
         required: true
     },
+    nombreNormalizado: {
+        type: String,
+        required: true
+    },
     electiva: { 
         type: Boolean,
         default: false
