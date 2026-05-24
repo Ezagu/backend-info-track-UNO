@@ -23,16 +23,16 @@ const ProfesorSchema = new Schema({
         type: String,
         required: true
     },
+    nombreNormalizado: {
+        type: String, 
+        required: true
+    },
     email: {
         type: String,
         required: true, 
         unique: true
     },
     ratings: [RatingSchema],
-    linkCampus: {  
-        type: String,
-        required: true
-    },
     materias: [{
         type: String,
         ref: 'Materia'

@@ -1,9 +1,3 @@
-export type SearchMateriaInput = {
-  search?: string
-  page?: number
-  limit?: number
-}
-
 export type IMateria = {
   id: string
   nombre: string

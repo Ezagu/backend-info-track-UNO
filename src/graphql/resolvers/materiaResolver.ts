@@ -1,26 +1,26 @@
+import type { IMateria } from "../../types/materia.js"
+import type { SearchInput } from "../../types/global.js"
 import { Comision } from "../../database/models/Comision.js"
 import { Materia } from "../../database/models/Materia.js"
 import { PlanEstudio } from "../../database/models/PlanEstudio.js"
 import { Profesor } from "../../database/models/Profesor.js"
-import type { IMateria, SearchMateriaInput } from "../../types/materia.js"
+import { normalizarString } from "../../helpers/normalizarString.js"
+
 
 export const materiaResolver = () => {
   return {
     Query: {
-      materias: async (_root: undefined, args: SearchMateriaInput) => {
+      materias: async (_root: undefined, args: SearchInput) => {
         const {search = "", page = 1, limit = 10} = args
 
+        // Le sacamos las tildes al search
+        const searchNormalizado = normalizarString(search)
         // Filtramos con el search y hacemos paginación
-        const materias = await Materia.find(
-          {nombreNormalizado: {
-            $regex: search,
-            $options: 'i'
-          }}
+        return await Materia.find(
+          {nombreNormalizado: {$regex: searchNormalizado, $options: 'i'}}
         )
-        .skip((page-1) * limit)
+        .skip((page - 1) * limit)
         .limit(limit)
-
-        return materias
       },
       materia: async (_root: undefined, args: {id: string}) => {
         return await Materia.findById(args.id)
