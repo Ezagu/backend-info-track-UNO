@@ -57,8 +57,21 @@ export const profesorResolver = () =>{
             materias: async (root: IProfesor) => {
                 return await Materia.find({_id: root.materias})
             },
-            cantidadPuntuaciones: async (root: IProfesor) => {
+            cantidadPuntuaciones: (root: IProfesor) => {
                 return root.puntuaciones?.length
+            },
+            promedioPuntuaciones: (root: IProfesor) => {
+                let sum = 0
+                const cant = root.puntuaciones?.length
+
+                if(cant &&  cant > 0) {
+                    root.puntuaciones?.forEach(p => {
+                        sum += p.puntuacion
+                    })
+                    return sum / cant
+                }
+                
+                return null
             }
         },
         Puntuacion: {

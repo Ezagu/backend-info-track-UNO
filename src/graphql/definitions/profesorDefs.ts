@@ -14,6 +14,7 @@ export const profesorDefs = () =>{
             puntuaciones: [Puntuacion]
             materias: [Materia]!
             cantidadPuntuaciones: Int!
+            promedioPuntuaciones: Float
         }
             
         type Query {
