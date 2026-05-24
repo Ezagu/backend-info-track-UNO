@@ -2,7 +2,7 @@ export const profesorDefs = () =>{
     return `
         type Puntuacion {
             id: ID!
-            usuarioId: ID!
+            usuario: Usuario!
             puntuacion: Float!
             comentario: String
         }

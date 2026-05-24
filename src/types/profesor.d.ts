@@ -1,6 +1,6 @@
 import type { Types } from "mongoose"
 
-export type Puntuacion = {
+export type IPuntuacion = {
   usuarioId: Types.ObjectId
   puntuacion: number
   fecha?: date

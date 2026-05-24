@@ -1,4 +1,4 @@
-import type { IProfesor, Puntuacion, PuntuarProfesorInput } from "../../types/profesor.js"
+import type { IProfesor, IPuntuacion, PuntuarProfesorInput } from "../../types/profesor.js"
 import type { Context } from "../../types/auth.js"
 import type { SearchInput } from "../../types/global.js"
 import type { Types } from "mongoose"
@@ -6,6 +6,7 @@ import { Profesor } from "../../database/models/Profesor.js"
 import { normalizarString } from "../../helpers/normalizarString.js"
 import { Materia } from "../../database/models/Materia.js"
 import { GraphQLError } from "graphql"
+import { User } from "../../database/models/User.js"
 
 export const profesorResolver = () =>{
     return {
@@ -40,7 +41,7 @@ export const profesorResolver = () =>{
                     throw new GraphQLError('Profesor ya puntuado', {extensions: {code: 'PUNTUACION_ALREADY_EXISTS'}})
 
                 // Creamos la puntuación
-                const puntuacion: Puntuacion = {
+                const puntuacion: IPuntuacion = {
                 usuarioId: context.currentUser.id,
                 puntuacion: args.puntuacion,
                 }
@@ -55,6 +56,11 @@ export const profesorResolver = () =>{
         Profesor: {
             materias: async (root: IProfesor) => {
                 return await Materia.find({_id: root.materias})
+            }
+        },
+        Puntuacion: {
+            usuario: async (root: IPuntuacion) => {
+                return await User.findById(root.usuarioId)
             }
         }
     }
