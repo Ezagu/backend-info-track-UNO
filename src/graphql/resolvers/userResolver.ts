@@ -7,6 +7,7 @@ import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { Profesor } from "../../database/models/Profesor.js"
+import { Carrera } from "../../database/models/Carrera.js"
 
 export const userResolver = () => {
   return {
@@ -26,19 +27,27 @@ export const userResolver = () => {
         if(userExiste) throw new GraphQLError('El usuario ya existe', {
           extensions: {code: 'USER_ALREADY_EXISTS'}
         })
-        
+
         // Cifrar la contraseña
         const passwordCifrada = bcrypt.hashSync(data.password, 10)
-        
-        // Guardamos usuario en la base de datos
+
         const user = new User({
           nombre: data.nombre,
           apellido: data.apellido,
           email: data.email,
           password: passwordCifrada
         })
+        
+        if(args.carreraId) {
+          // Comprobar que exista la carrera
+          const carrera = await Carrera.findById(args.carreraId)
+          if(!carrera) throw new GraphQLError('La carrera no existe', {extensions: {code: 'CARRERA_NOT_FOUND'}})
 
-        return await user.save()
+          user.carreras.push(carrera._id)
+        }
+        
+        await user.save()
+        return user
       },
       loguearUsuario: async (_root: undefined, args: LoginUser) => {
         // Validar datos

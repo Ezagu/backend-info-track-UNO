@@ -34,6 +34,7 @@ export type RegisterUser = {
   apellido: string
   password: string
   email: string
+  carreraId?: Types.ObjectId
 }
 
 export type LoginUser = {
@@ -42,7 +43,7 @@ export type LoginUser = {
 }
 
 export type EstablecerEstadoMateria = {
-  idMateria: string
+  materiaId: string
   estado: EstadoMateria
   anio: number
   cuatrimestre: number
