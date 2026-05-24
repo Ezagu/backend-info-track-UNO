@@ -16,9 +16,11 @@ import { profesorDefs } from "./graphql/definitions/profesorDefs.js"
 import { profesorResolver } from "./graphql/resolvers/profesorResolver.js"
 import { User } from "./database/models/User.js"
 
-connect()
-
+// Importa las variables de entorno
 dotenv.config()
+
+// Conectarse a la base de datos
+connect()
 
 const typeDefs = [
   userDefs(),
