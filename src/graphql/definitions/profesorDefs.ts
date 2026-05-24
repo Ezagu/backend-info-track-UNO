@@ -14,5 +14,9 @@ export const profesorDefs = () =>{
             ratings: [Rating]
             materias: [Materia]!
         }
+            
+        type Query {
+            profesor(id: ID!): Profesor
+        }
     `
 }
