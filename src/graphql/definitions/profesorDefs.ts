@@ -13,6 +13,7 @@ export const profesorDefs = () =>{
             email: String!
             puntuaciones: [Puntuacion]
             materias: [Materia]!
+            cantidadPuntuaciones: Int!
         }
             
         type Query {

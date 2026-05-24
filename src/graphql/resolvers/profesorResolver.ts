@@ -56,6 +56,9 @@ export const profesorResolver = () =>{
         Profesor: {
             materias: async (root: IProfesor) => {
                 return await Materia.find({_id: root.materias})
+            },
+            cantidadPuntuaciones: async (root: IProfesor) => {
+                return root.puntuaciones?.length
             }
         },
         Puntuacion: {

@@ -11,7 +11,7 @@ export type IProfesor = {
   nombre: string
   nombreNormalizado: string
   email: string
-  puntuaciones: Puntuacion[]
+  puntuaciones?: Puntuacion[]
   materias: string[]
 }
 
