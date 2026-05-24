@@ -1,7 +1,8 @@
 export const profesorDefs = () =>{
     return `
-        type Rating {
-            userId: String!
+        type Puntuacion {
+            id: ID!
+            usuarioId: ID!
             puntuacion: Float!
             comentario: String
         }
@@ -10,13 +11,17 @@ export const profesorDefs = () =>{
             id: ID!
             nombre: String!
             email: String!
-            ratings: [Rating]
+            puntuaciones: [Puntuacion]
             materias: [Materia]!
         }
             
         type Query {
             profesor(id: ID!): Profesor
             profesores(search: String, limit: Int, page: Int): [Profesor]
+        }
+
+        type Mutation {
+            puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Profesor
         }
     `
 }

@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose"
 
-const RatingSchema = new Schema({
+const PuntuacionSchema = new Schema({
     usuarioId: {
         type: Schema.ObjectId,
         ref: 'Usuario'
     },
-    rate: {
+    puntuacion: {
         type: Number,
         required: true,
         min: 1,
@@ -32,7 +32,7 @@ const ProfesorSchema = new Schema({
         required: true, 
         unique: true
     },
-    ratings: [RatingSchema],
+    puntuaciones: [PuntuacionSchema],
     materias: [{
         type: String,
         ref: 'Materia'

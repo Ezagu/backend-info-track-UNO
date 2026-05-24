@@ -6,17 +6,18 @@ import { GraphQLError } from "graphql"
 import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
+import { Profesor } from "../../database/models/Profesor.js"
 
 export const userResolver = () => {
   return {
     Query: {
-      me: (root: unknown, args: unknown, context: Context) => {
+      me: (_root: undefined, _args: undefined, context: Context) => {
         if(!context.currentUser) throw new Error('USUARIO NO IDENTIFICADO')
         return context.currentUser
       }
     },
     Mutation: {
-      registrarUsuario: async (_: unknown, args: RegisterUser) => {
+      registrarUsuario: async (_root: undefined, args: RegisterUser) => {
         // Validar datos
         const data = validateRegisterInput(args)
         
@@ -39,7 +40,7 @@ export const userResolver = () => {
 
         return await user.save()
       },
-      loguearUsuario: async (_: unknown, args: LoginUser) => {
+      loguearUsuario: async (_root: undefined, args: LoginUser) => {
         // Validar datos
         const data = validateLoginInput(args)
 
@@ -61,7 +62,7 @@ export const userResolver = () => {
 
         return jwt.sign({id: userExiste._id}, privateKey)
       },
-      establecerEstadoMateria: async (_: unknown, args: EstablecerEstadoMateria, context: Context) => {
+      establecerEstadoMateria: async (_root: undefined, args: EstablecerEstadoMateria, context: Context) => {
         // Verificamos que este logueado
         if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
 
@@ -77,7 +78,7 @@ export const userResolver = () => {
           materiaId: data.idMateria,
           estado: data.estado as EstadoMateria,
           cuatrimestre: data.cuatrimestre,
-          anio: data.year,
+          anio: data.anio,
           notaFinal: null,
           llamadosUsados: null,
           vencimiento: null
@@ -86,7 +87,7 @@ export const userResolver = () => {
         // Agregar datos si el estado es regularizada
         if(data.estado === "REGULARIZADA") {
           newMateria.llamadosUsados = 0
-          newMateria.vencimiento = new Date(data.year + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
+          newMateria.vencimiento = new Date(data.anio + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
         }
 
         // Agregar datos si el estado es aprobada o promocionada

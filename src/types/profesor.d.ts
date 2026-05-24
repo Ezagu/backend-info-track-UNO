@@ -1,9 +1,9 @@
 import type { Types } from "mongoose"
 
-type Rating = {
+export type Puntuacion = {
   usuarioId: Types.ObjectId
-  rate: number
-  fecha: date
+  puntuacion: number
+  fecha?: date
   comentario?: string
 }
 
@@ -11,6 +11,12 @@ export type IProfesor = {
   nombre: string
   nombreNormalizado: string
   email: string
-  ratings: Rating[]
+  puntuaciones: Puntuacion[]
   materias: string[]
+}
+
+export type PuntuarProfesorInput = {
+  profesorId: Types.ObjectId
+  puntuacion: number
+  comentario?: string
 }
