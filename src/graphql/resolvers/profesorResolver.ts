@@ -1,11 +1,11 @@
-import type { IProfesor, IPuntuacion, PuntuarProfesorInput } from "../../types/profesor.js"
-import type { Context } from "../../types/auth.js"
+import type { IProfesor } from "../../types/profesor.js"
 import type { SearchInput } from "../../types/global.js"
 import type { Types } from "mongoose"
 import { Profesor } from "../../database/models/Profesor.js"
 import { normalizarString } from "../../helpers/normalizarString.js"
 import { Materia } from "../../database/models/Materia.js"
-import { GraphQLError } from "graphql"
+import { Puntuacion } from "../../database/models/Puntacion.js"
+import type { IPuntuacion } from "../../types/puntuacion.js"
 import { User } from "../../database/models/User.js"
 
 export const profesorResolver = () =>{
@@ -26,56 +26,29 @@ export const profesorResolver = () =>{
                 .limit(limit)
             }
         },
-        Mutation: {
-            puntuarProfesor: async (_root: undefined, args: PuntuarProfesorInput, context: Context) => {
-                // Validar que este logueado el usuario
-                if(!context.currentUser) throw new GraphQLError('No identificado', {extensions: {code: "UNAUTHORIZED"}})
-
-                // TODO: Validar datos ingresados
-
-                // Si no existe el profesor tirar un error
-                const profesor = await Profesor.findById(args.profesorId)
-                if(!profesor) throw new GraphQLError('No se encontró el profesor', {extensions: {code: "PROFESOR_NOT_FOUND"}})
-                // Validar que el usuario no haya puntuado anteriormente al profesor
-                if(profesor.puntuaciones.find(p => p.usuarioId?.toString() === context.currentUser?.id.toString()))
-                    throw new GraphQLError('Profesor ya puntuado', {extensions: {code: 'PUNTUACION_ALREADY_EXISTS'}})
-
-                // Creamos la puntuación
-                const puntuacion: IPuntuacion = {
-                usuarioId: context.currentUser.id,
-                puntuacion: args.puntuacion,
-                }
-                // Si hay un comentario lo agregamos
-                if(args.comentario) puntuacion.comentario = args.comentario
-                // Guardar en la base de datos
-                profesor.puntuaciones.push(puntuacion)
-                await profesor.save()
-                return profesor
-            }
-        },
         Profesor: {
             materias: async (root: IProfesor) => {
                 return await Materia.find({_id: root.materias})
             },
-            cantidadPuntuaciones: (root: IProfesor) => {
-                return root.puntuaciones?.length
+            puntuaciones: async (root: IProfesor) => {
+                return await Puntuacion.find({profesorId: root.id})
             },
-            promedioPuntuaciones: (root: IProfesor) => {
+            cantidadPuntuaciones: async (root: IProfesor) => {
+                return await Puntuacion.countDocuments({profesorId: root.id})
+            },
+            promedioPuntuaciones: async (root: IProfesor) => {
+                const puntuaciones =  await Puntuacion.find({profesorId: root.id})
                 let sum = 0
-                const cant = root.puntuaciones?.length
-
-                if(cant &&  cant > 0) {
-                    root.puntuaciones?.forEach(p => {
-                        sum += p.puntuacion
-                    })
+                const cant = puntuaciones.length
+                if(cant && cant > 0) {
+                    puntuaciones.forEach(p => sum += p.puntuacion)
                     return sum / cant
                 }
-                
                 return null
             }
         },
-        Puntuacion: {
-            usuario: async (root: IPuntuacion) => {
+        PuntuacionProfesor: {
+            usuario: async(root: IPuntuacion) => {
                 return await User.findById(root.usuarioId)
             }
         }

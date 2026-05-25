@@ -15,6 +15,9 @@ import { planEstudioDefs } from "./graphql/definitions/planEstudioDefs.js"
 import { profesorDefs } from "./graphql/definitions/profesorDefs.js"
 import { profesorResolver } from "./graphql/resolvers/profesorResolver.js"
 import { User } from "./database/models/User.js"
+import { puntuacionDefs } from "./graphql/definitions/puntuacionDefs.js"
+import { puntuacionResolver } from "./graphql/resolvers/puntuacionResolver.js"
+import { GraphQLError } from "graphql"
 
 // Importa las variables de entorno
 dotenv.config()
@@ -28,14 +31,16 @@ const typeDefs = [
   carreraDefs(),
   comisionDefs(),
   planEstudioDefs(),
-  profesorDefs()
+  profesorDefs(),
+  puntuacionDefs()
 ]
 
 const resolvers = [
   userResolver(),
   materiaResolver(),
   carreraResolver(),
-  profesorResolver()
+  profesorResolver(),
+  puntuacionResolver()
 ]
 
 //Crear server
@@ -53,13 +58,16 @@ const { url } = await startStandaloneServer(server, {
       // Cargar variable de entorno
       const secretKey = process.env.JWT_SECRET
       if(!secretKey) throw new Error('Secret key no cargada')
+
       // Decodificar token
       const {id} = jwt.verify(token, secretKey) as JwtPayload
+      
       // Buscar usuario y retornarlo
       const user = await User.findById(id);
+      if(!user) throw new GraphQLError('Error al buscar usuario identificado', {extensions: {code: 'USER_NOT_FOUND'}})
       return { currentUser: user }
     }
-    return {}
+    return { currentUser: undefined }
   }
 })
 

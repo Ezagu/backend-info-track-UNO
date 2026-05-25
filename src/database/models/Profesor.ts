@@ -1,23 +1,5 @@
 import mongoose, { Schema } from "mongoose"
 
-const PuntuacionSchema = new Schema({
-    usuarioId: {
-        type: Schema.ObjectId,
-        ref: 'Usuario'
-    },
-    puntuacion: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 5
-    },
-    comentario: String,
-    fecha: {
-        type: Date,
-        default: Date.now
-    }
-})
-
 const ProfesorSchema = new Schema({
     nombre: {
         type: String,
@@ -32,7 +14,6 @@ const ProfesorSchema = new Schema({
         required: true, 
         unique: true
     },
-    puntuaciones: [PuntuacionSchema],
     materias: [{
         type: String,
         ref: 'Materia'

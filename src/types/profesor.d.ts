@@ -1,22 +1,10 @@
 import type { Types } from "mongoose"
 
-export type IPuntuacion = {
-  usuarioId: Types.ObjectId
-  puntuacion: number
-  fecha?: date
-  comentario?: string
-}
-
 export type IProfesor = {
+  _id: Types.ObjectId
+  id: string
   nombre: string
   nombreNormalizado: string
   email: string
-  puntuaciones?: Puntuacion[]
   materias: string[]
-}
-
-export type PuntuarProfesorInput = {
-  profesorId: Types.ObjectId
-  puntuacion: number
-  comentario?: string
 }

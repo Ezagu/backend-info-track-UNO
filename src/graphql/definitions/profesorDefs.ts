@@ -1,17 +1,18 @@
 export const profesorDefs = () =>{
     return `
-        type Puntuacion {
+        type PuntuacionProfesor {
             id: ID!
             usuario: Usuario!
             puntuacion: Float!
             comentario: String
+            fecha: String
         }
 
         type Profesor {
             id: ID!
             nombre: String!
             email: String!
-            puntuaciones: [Puntuacion]
+            puntuaciones: [PuntuacionProfesor]
             materias: [Materia]!
             cantidadPuntuaciones: Int!
             promedioPuntuaciones: Float
@@ -20,10 +21,6 @@ export const profesorDefs = () =>{
         type Query {
             profesor(id: ID!): Profesor
             profesores(search: String, limit: Int, page: Int): [Profesor]
-        }
-
-        type Mutation {
-            puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Profesor
         }
     `
 }
