@@ -142,6 +142,21 @@ export const userResolver = () => {
 
         user?.carreras.push(new Types.ObjectId(args.carreraId))
         return await user?.save()
+      },
+      eliminarEstadoMateria: async (_root: undefined, args: {materiaId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        const user = await User.findById(context.currentUser.id)
+        if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
+        const materiaIndex = user.materias.findIndex(m => m.materiaId.toString() === args.materiaId)
+
+        // Validar que el usuario tenga la materia
+        if(materiaIndex === -1) throw new GraphQLError('El usuario no tiene registrada esta materia', {extensions: {code: 'MATERIA_NOT_FOUND'}})
+
+        // Eliminar materia
+        user.materias.splice(materiaIndex, 1)
+        return await user.save()
       }
     },
     Usuario: {

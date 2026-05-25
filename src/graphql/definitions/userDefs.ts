@@ -51,6 +51,7 @@ export const userDefs = () => {
       loguearUsuario(email: String!, password: String!): String
       establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
       inscribirseEnCarrera(carreraId: ID!): Usuario
+      eliminarEstadoMateria(materiaId: String!): Usuario
     }
   `
 }
