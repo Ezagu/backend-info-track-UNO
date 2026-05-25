@@ -10,6 +10,7 @@ export const puntuacionDefs = () => {
 
     type Mutation {
       puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Puntuacion
+      modificarPuntuacionProfesor(puntuacionId: ID!, puntuacion: Float, comentario: String): Puntuacion
     }
   `
 }

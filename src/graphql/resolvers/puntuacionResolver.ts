@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql"
 import type { Context } from "../../types/auth.js"
-import type { PuntuarProfesorInput } from "../../types/puntuacion.js"
+import type { ModificarPuntuacionInput, PuntuarProfesorInput } from "../../types/puntuacion.js"
 import { Profesor } from "../../database/models/Profesor.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
 
@@ -32,6 +32,26 @@ export const puntuacionResolver = () =>{
         // Guardar en la base de datos
         await puntuacion.save()
         return puntuacion
+      },
+      modificarPuntuacionProfesor: async(_root: undefined, args: ModificarPuntuacionInput, context: Context) => {
+        // Validar que este logueado el usuario
+        if(!context.currentUser) throw new GraphQLError('No identificado', {extensions: {code: "UNAUTHORIZED"}})
+
+        // Validar que envie datos a actualizar
+        if(!args.comentario && !args.puntuacion) throw new GraphQLError('Falta enviar los datos a modificar', {extensions: {code: "MISSING_ARGUMENT"}})
+
+        // Validar que exista la puntuacion
+        const puntuacion = await Puntuacion.findById(args.puntuacionId)
+        if(!puntuacion) throw new GraphQLError('No existe la puntuacion', {extensions: {code: "PUNTUACION_NOT_FOUND"}})
+        
+        // Validar que la puntuacion sea del usuario identificado
+        if(puntuacion.usuarioId?.toString() !== context.currentUser.id.toString()) throw new GraphQLError('Puntuacion no pertenece a usuario identificado', {extensions: {code: "FORBIDDEN"}})
+
+        // Actualizar la puntuacion
+        puntuacion.comentario = args.comentario || puntuacion.comentario || null
+        puntuacion.puntuacion = args.puntuacion || puntuacion.puntuacion
+
+        return await puntuacion.save()
       }
     }
   }

@@ -13,3 +13,9 @@ export type PuntuarProfesorInput = {
   puntuacion: number
   comentario?: string
 }
+
+export type ModificarPuntuacionInput = {
+  puntuacionId: Types.ObjectId
+  puntuacion?: number
+  comentario?: string
+}
