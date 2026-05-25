@@ -1,4 +1,3 @@
-import { GraphQLError } from 'graphql'
 import * as z from 'zod'
 import { formatearErrorValidacion } from '../helpers/formatearErrorValidacion.js'
 
@@ -15,7 +14,12 @@ const UserRegister = z.object({
     .min(8, 'Debe contener mínimo 8 caracteres')
     .max(100, 'Debe contener menos de 100 caracteres')
     .regex(/[A-Z]/, 'Debe tener al menos una mayúscula')
-    .regex(/[0-9]/, 'Debe tener al menos un número')
+    .regex(/[0-9]/, 'Debe tener al menos un número'),
+  carreraId: z.string().optional(),
+  anioIngreso: z.int()
+    .min(2015, 'Ingrese un año válido')
+    .max(new Date().getFullYear(), 'Ingrese un año válido')
+    .optional()
 })
 
 const UserLogin = z.object({
@@ -27,14 +31,14 @@ const EstadoMateria = z.object({
   materiaId: z.string(),
   estado: 
     z.enum(['APROBADA','REGULARIZADA','CURSANDO','PROMOCIONADA']),
-  nota: z.number()
-    .min(1, 'La nota mínima es 1')
+  nota: z.int()
+    .min(0, 'La nota mínima es 0')
     .max(10, 'La nota máxima es 10')
     .optional(),
-  anio: z.number()
-    .min(2009, 'Año inválido')
-    .max(2026, 'Año inválido'),
-  cuatrimestre: z.number()
+  anio: z.int()
+    .min(2015, 'Año inválido')
+    .max(new Date().getFullYear(), 'Año inválido'),
+  cuatrimestre: z.int()
     .min(1, 'Cuatrimestre inválido')
     .max(2, 'Cuatrimestre inválido')
 })

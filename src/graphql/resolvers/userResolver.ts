@@ -41,13 +41,15 @@ export const userResolver = () => {
           password: passwordCifrada
         })
         
-        if(args.carreraId) {
+        if(data.carreraId) {
           // Comprobar que exista la carrera
-          const carrera = await Carrera.findById(args.carreraId)
+          const carrera = await Carrera.findById(data.carreraId)
           if(!carrera) throw new GraphQLError('La carrera no existe', {extensions: {code: 'CARRERA_NOT_FOUND'}})
 
           user.carreras.push(carrera._id)
         }
+
+        if(data.anioIngreso) user.anioIngreso = data.anioIngreso
         
         await user.save()
         return user
