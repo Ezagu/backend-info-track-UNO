@@ -4,7 +4,6 @@ export const carreraDefs = () => {
         materia: Materia!
         anio: Int!
         cuatrimestre: Int!
-        correlativas: [Materia]
     }
 
     type Carrera {

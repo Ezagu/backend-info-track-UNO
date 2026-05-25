@@ -4,9 +4,8 @@ export const planEstudioDefs = () => {
             id: ID!
             carreraId: String!
             materiaId: String!
-            year: Int!
+            anio: Int!
             cuatrimestre: Int!
-            correlativas: [String]!
         }
     `
 }

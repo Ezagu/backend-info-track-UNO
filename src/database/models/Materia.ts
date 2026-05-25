@@ -14,6 +14,10 @@ const MateriaSchema = new Schema({
         type: Boolean,
         default: false
     },
+    correlativas: [{
+        type: String,
+        ref: 'Materia'
+    }],
     cargaHorariaSemanal: Number,
     cargaHorariaTotal: Number,
     linkCampus: String,

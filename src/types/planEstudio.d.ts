@@ -5,5 +5,4 @@ export type IPlanEstudio = {
   materiaId: string
   anio: number
   cuatrimestre: number
-  correlativas: string[]
 }

@@ -1,5 +1,11 @@
 export const materiaDefs = () => {
   return `
+    type PlanEstudioMateria {
+      carrera: Carrera
+      anio: Int!
+      cuatrimestre: Int!
+    }
+
     type Materia {
       id: ID!
       nombre: String!
@@ -7,7 +13,8 @@ export const materiaDefs = () => {
       cargaHorariaSemanal: Int
       linkWhatsapp: String
       promocion: Boolean
-      carreras: [Carrera]
+      correlativas: [Materia]
+      planEstudio: [PlanEstudioMateria]
       comisiones: [Comision]
       profesores: [Profesor]
     }

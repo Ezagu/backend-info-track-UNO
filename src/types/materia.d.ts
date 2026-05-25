@@ -4,6 +4,7 @@ export type IMateria = {
   nombreNormalizado: string
   electiva: boolean
   promocion: boolean
+  correlativas: string[]
   cargaHorariaSemanal?: number
   cargaHorariaTotal?: number
   linkCampus?: string

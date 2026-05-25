@@ -18,11 +18,7 @@ const PlanEstudioSchema = new Schema({
     cuatrimestre: {
         type: String,   
         required: true
-    },
-    correlativas: [{
-        type: String,
-        ref: 'Materia'
-    }]
+    }
 })  
 
 export const PlanEstudio = mongoose.model('PlanEstudio', PlanEstudioSchema, "planestudios")
