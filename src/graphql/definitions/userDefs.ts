@@ -52,6 +52,7 @@ export const userDefs = () => {
       establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
       inscribirseEnCarrera(carreraId: ID!): Usuario
       eliminarEstadoMateria(materiaId: String!): Usuario
+      registrarLlamado(materiaId: String!, notaFinal: Int!): Usuario
     }
   `
 }

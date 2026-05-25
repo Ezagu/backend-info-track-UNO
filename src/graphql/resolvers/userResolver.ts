@@ -157,6 +157,44 @@ export const userResolver = () => {
         // Eliminar materia
         user.materias.splice(materiaIndex, 1)
         return await user.save()
+      },
+      registrarLlamado: async (_root: undefined, args: {materiaId: string, notaFinal: number}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        const user = await User.findById(context.currentUser.id)
+        if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
+        const materiaIndex = user.materias.findIndex(m => m.materiaId.toString() === args.materiaId)
+        const materia = user.materias[materiaIndex]
+
+        // Validar que el usuario tenga la materia
+        if(materiaIndex === -1) throw new GraphQLError('El usuario no tiene registrada esta materia', {extensions: {code: 'MATERIA_NOT_FOUND'}}) 
+
+        // Validar que el usuario tenga la materia regularizada
+        if(materia?.estado !== "REGULARIZADA") throw new GraphQLError('La materia no está regularizada por el usuario', {extensions: {code: 'CONFLICT'}})
+
+        // Validar que la materia no esté vencida
+        if(materia.vencimiento) {
+          if(materia.vencimiento < new Date()) throw new GraphQLError('Materia vencida', {extensions: {code: 'CONFLICT'}}) 
+        }
+
+        // Validar que tenga llamados disponibles
+        if(materia.llamadosUsados && materia.llamadosUsados >= 3) throw new GraphQLError('No quedan más llamados', {extensions: {code: 'CONFLICT'}}) 
+
+        if(args.notaFinal >= 4) {
+          // Si aprobo colocal materia aprobada
+          materia.estado = "APROBADA"
+          materia.notaFinal = args.notaFinal
+        } else {
+          // Si no aprobo suma llamado y fijarse si venció
+          if(materia.llamadosUsados) {
+            materia.llamadosUsados++
+          } else {
+            materia.llamadosUsados = 1
+          }
+        }
+
+        return user.save()
       }
     },
     Usuario: {
