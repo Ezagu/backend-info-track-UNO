@@ -9,13 +9,13 @@ export type IPuntuacion = {
 }
 
 export type PuntuarProfesorInput = {
-  profesorId: Types.ObjectId
+  profesorId: string
   puntuacion: number
   comentario?: string
 }
 
 export type ModificarPuntuacionInput = {
-  puntuacionId: Types.ObjectId
+  puntuacionId: string
   puntuacion?: number
   comentario?: string
 }

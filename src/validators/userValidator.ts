@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql'
 import * as z from 'zod'
+import { formatearErrorValidacion } from '../helpers/formatearErrorValidacion.js'
 
 // Esquemas
 const UserRegister = z.object({
@@ -40,61 +41,13 @@ const EstadoMateria = z.object({
 
 // Validators
 export const validateRegisterInput = (input: unknown) => {
-  const result = z.safeParse(UserRegister, input)
-  if(!result.success) {
-    // Formatear los errores
-    const errors = result.error.issues.map(issue => ({
-      field: issue.path[0],
-      message: issue.message
-    }))
-
-    // Tirar error de graphql
-    throw new GraphQLError('Error de validación', {
-      extensions: {
-        code: 'VALIDATION_ERROR',
-        errors
-      }
-    })
-  }
-  return result.data
+  return formatearErrorValidacion(z.safeParse(UserRegister, input))
 }
 
 export const validateLoginInput = (input: unknown) => {
-  const result = z.safeParse(UserLogin, input)
-  if(!result.success) {
-    // Formatear los errores
-    const errors = result.error.issues.map(issue => ({
-      field: issue.path[0],
-      message: issue.message
-    }))
-
-    // Tirar error de graphql
-    throw new GraphQLError('Error de validación', {
-      extensions: {
-        code: 'VALIDATION_ERROR',
-        errors
-      }
-    })
-  }
-  return result.data
+  return formatearErrorValidacion(z.safeParse(UserLogin, input))
 }
 
 export const validateEstadoMateriaInput = (input: unknown) => {
-  const result = EstadoMateria.safeParse(input)
-  if(!result.success) {
-    // Formatear los errores
-    const errors = result.error.issues.map(issue => ({
-      field: issue.path[0],
-      message: issue.message
-    }))
-
-    // Tirar error de graphql
-    throw new GraphQLError('Error de validación', {
-      extensions: {
-        code: 'VALIDATION_ERROR',
-        errors
-      }
-    })
-  }
-  return result.data
+  return formatearErrorValidacion(EstadoMateria.safeParse(input))
 }
