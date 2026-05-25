@@ -105,6 +105,8 @@ export const userResolver = () => {
         // Agregar datos si el estado es aprobada o promocionada
         if(data.estado === "APROBADA" || data.estado === "PROMOCIONADA") {
           if(!data.nota) throw new GraphQLError('Debes ingresar una nota numérica', {extensions: {code: 'MISSING_ARGUMENT'}})
+          if(data.nota < 4) throw new GraphQLError('Para promocionar o aprobar la nota debe ser superior a 4', {extensions: {code: 'CONFLICT'}})
+          if(data.estado === "PROMOCIONADA" && data.nota < 7) throw new GraphQLError('Para promocionar la nota debe ser superior a 7', {extensions: {code: 'CONFLICT'}})
           newMateria.notaFinal = data.nota
         }
 
