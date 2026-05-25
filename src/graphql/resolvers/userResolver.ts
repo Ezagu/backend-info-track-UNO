@@ -134,6 +134,9 @@ export const userResolver = () => {
         })
         if(cant === 0) return null
         return (sum / cant).toFixed(2)
+      },
+      carreras: async (root: IUser) => {
+        return await Carrera.find({_id: root.carreras})
       }
     },
     MateriaUsuario: {
