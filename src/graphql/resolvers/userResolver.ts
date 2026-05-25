@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 import { GraphQLError } from "graphql"
 import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
-import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
+import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput, validateActualizarUsuario } from "../../validators/userValidator.js"
 import { Carrera } from "../../database/models/Carrera.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
 import { Profesor } from "../../database/models/Profesor.js"
@@ -211,6 +211,19 @@ export const userResolver = () => {
 
         user.carreras.splice(carreraIndex, 1)
         return await user.save()
+      },
+      modificarUsuario: async (_root: undefined, args: {carreraId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        // Validar datos
+        const data = validateActualizarUsuario(args)
+
+        // Validar que hayan enviado datos para actualizar
+        if(Object.keys(data).length === 0) throw new GraphQLError('No hay datos para actualizar', {extensions: {code: 'MISSING_ARGUMENT'}})
+
+        // Actualizar usuario
+        return await User.findByIdAndUpdate(context.currentUser.id, data, {returnDocument: 'after', runValidators: true})
       }
     },
     Usuario: {

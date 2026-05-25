@@ -39,6 +39,21 @@ const EstadoMateria = z.object({
     .max(2, 'Cuatrimestre inválido')
 })
 
+const ActualizarUsuario = z.object({
+  nombre: z.string().trim()
+    .min(3, 'Debe contener más de 3 caracteres')
+    .max(40, 'Debe contener menos de 40 caracteres')
+    .optional(),
+  apellido: z.string().trim()
+    .min(3, 'Debe contener más de 3 caracteres')
+    .max(40, 'Debe contener menos de 40 caracteres')
+    .optional(),
+  anioIngreso: z.int()
+    .min(2015, 'Ingrese un año válido')
+    .max(new Date().getFullYear(), 'Ingrese un año válido')
+    .optional()
+})
+
 // Validators
 export const validateRegisterInput = (input: unknown) => {
   return formatearErrorValidacion(z.safeParse(UserRegister, input))
@@ -50,4 +65,8 @@ export const validateLoginInput = (input: unknown) => {
 
 export const validateEstadoMateriaInput = (input: unknown) => {
   return formatearErrorValidacion(EstadoMateria.safeParse(input))
+}
+
+export const validateActualizarUsuario = (input: unknown) => {
+  return formatearErrorValidacion(ActualizarUsuario.safeParse(input))
 }
