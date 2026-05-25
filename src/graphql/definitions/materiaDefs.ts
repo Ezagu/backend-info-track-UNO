@@ -5,8 +5,6 @@ export const materiaDefs = () => {
       nombre: String!
       cargaHorariaTotal: Int
       cargaHorariaSemanal: Int
-      electiva: Boolean
-      linkCampus: String
       linkWhatsapp: String
       promocion: Boolean
       carreras: [Carrera]

@@ -1,5 +1,7 @@
 import type { EstablecerEstadoMateria, EstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
 import type { Context } from "../../types/auth.js"
+import type { IPuntuacion } from "../../types/puntuacion.js"
+import { Types } from "mongoose"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { GraphQLError } from "graphql"
@@ -8,7 +10,6 @@ import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { Carrera } from "../../database/models/Carrera.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
-import type { IPuntuacion } from "../../types/puntuacion.js"
 import { Profesor } from "../../database/models/Profesor.js"
 
 export const userResolver = () => {
@@ -123,6 +124,24 @@ export const userResolver = () => {
 
         await user.save()
         return user
+      },
+      inscribirseEnCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        // Validar que la carrera exista
+        const carrera = await Carrera.findById(args.carreraId)
+        if(!carrera) throw new GraphQLError('Carrera no encontrada', {extensions: {code: 'CARRERA_NOT_FOUND'}})
+
+        const user = await User.findById(context.currentUser.id)
+
+        // Validar que el usuario no esté inscripto
+        const carreraExists = user?.carreras.find(c => c.toString() === args.carreraId)
+        if(carreraExists) throw new GraphQLError('Usuario ya inscripto en la carrera', {extensions: {code: 'CONFLICT'}})
+
+
+        user?.carreras.push(new Types.ObjectId(args.carreraId))
+        return await user?.save()
       }
     },
     Usuario: {

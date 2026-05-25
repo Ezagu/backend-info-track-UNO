@@ -1,6 +1,5 @@
 export const userDefs = () => {
   return `
-
     enum EstadoMateria {
       APROBADA
       REGULARIZADA
@@ -51,6 +50,7 @@ export const userDefs = () => {
       registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String, carreraId: ID): Usuario
       loguearUsuario(email: String!, password: String!): String
       establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
+      inscribirseEnCarrera(carreraId: ID!): Usuario
     }
   `
 }

@@ -10,10 +10,6 @@ const MateriaSchema = new Schema({
         type: String,
         required: true
     },
-    electiva: { 
-        type: Boolean,
-        default: false
-    },
     promocion: {
         type: Boolean,
         default: false
