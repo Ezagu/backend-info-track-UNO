@@ -23,6 +23,13 @@ export const userDefs = () => {
       vencimiento: String
     }
 
+    type PuntuacionUsuario {
+      profesor: Profesor
+      puntuacion: Float!
+      comentario: String
+      fecha: String!
+    }
+
     type Usuario {
       id: ID!
       nombre: String!
@@ -33,6 +40,7 @@ export const userDefs = () => {
       materias: [MateriaUsuario]
       carreras: [Carrera]
       promedioGeneral: Float
+      puntuaciones: [PuntuacionUsuario]
     }
 
     type Query {

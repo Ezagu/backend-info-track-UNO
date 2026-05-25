@@ -7,6 +7,9 @@ import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
 import { Carrera } from "../../database/models/Carrera.js"
+import { Puntuacion } from "../../database/models/Puntacion.js"
+import type { IPuntuacion } from "../../types/puntuacion.js"
+import { Profesor } from "../../database/models/Profesor.js"
 
 export const userResolver = () => {
   return {
@@ -137,11 +140,19 @@ export const userResolver = () => {
       },
       carreras: async (root: IUser) => {
         return await Carrera.find({_id: root.carreras})
+      },
+      puntuaciones: async (root: IUser) => {
+        return await Puntuacion.find({usuarioId: root.id})
       }
     },
     MateriaUsuario: {
       materia: async (root: MateriaUser) => {
         return await Materia.findById(root.materiaId)
+      }
+    },
+    PuntuacionUsuario: {
+      profesor: async (root: IPuntuacion) => {
+        return await Profesor.findById(root.profesorId)
       }
     }
   }
