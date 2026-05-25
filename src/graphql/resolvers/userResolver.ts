@@ -197,6 +197,20 @@ export const userResolver = () => {
         }
 
         return user.save()
+      },
+      darseBajaCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        const user = await User.findById(context.currentUser.id)
+        if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
+        
+        // Validar que el usuario este en la carrera
+        const carreraIndex = user.carreras.findIndex(c => c.toString() === args.carreraId)
+        if(carreraIndex === -1) throw new GraphQLError('El usuario no esta inscripto en la carrera', {extensions: {code: 'CARRERA_NOT_FOUND'}})
+
+        user.carreras.splice(carreraIndex, 1)
+        return await user.save()
       }
     },
     Usuario: {

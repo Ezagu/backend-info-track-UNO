@@ -53,6 +53,7 @@ export const userDefs = () => {
       inscribirseEnCarrera(carreraId: ID!): Usuario
       eliminarEstadoMateria(materiaId: String!): Usuario
       registrarLlamado(materiaId: String!, notaFinal: Int!): Usuario
+      darseBajaCarrera(carreraId: ID!): Usuario
     }
   `
 }

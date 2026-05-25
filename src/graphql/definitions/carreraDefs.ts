@@ -11,7 +11,7 @@ export const carreraDefs = () => {
         id: ID!
         nombre: String!
         duracion: Int!
-        descripcion: String!
+        descripcion: String
         tituloOtorgado: String!
         cargaHorariaTotal: Int!
         materias: [MateriaCarrera]
