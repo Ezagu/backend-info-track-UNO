@@ -23,8 +23,7 @@ const UserLogin = z.object({
 })
 
 const EstadoMateria = z.object({
-
-  idMateria: z.string(),
+  materiaId: z.string(),
   estado: 
     z.enum(['APROBADA','REGULARIZADA','CURSANDO','PROMOCIONADA']),
   nota: z.number()

@@ -1,4 +1,4 @@
-import type { EstablecerEstadoMateria, EstadoMateria, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
+import type { EstablecerEstadoMateria, EstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
 import type { Context } from "../../types/auth.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -6,7 +6,6 @@ import { GraphQLError } from "graphql"
 import { User } from "../../database/models/User.js"
 import { Materia } from "../../database/models/Materia.js"
 import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput } from "../../validators/userValidator.js"
-import { Profesor } from "../../database/models/Profesor.js"
 import { Carrera } from "../../database/models/Carrera.js"
 
 export const userResolver = () => {
@@ -79,12 +78,12 @@ export const userResolver = () => {
         const data = validateEstadoMateriaInput(args)
 
         // Validamos que exista la materia
-        const materia = await Materia.findById(data.idMateria)
+        const materia = await Materia.findById(data.materiaId)
         if(!materia) throw new GraphQLError('La materia no existe', {extensions: {code: "MATERIA_NOT_FOUND"}})
 
         // Creamos la nueva materia
         const newMateria: MateriaUser = {
-          materiaId: data.idMateria,
+          materiaId: data.materiaId,
           estado: data.estado as EstadoMateria,
           cuatrimestre: data.cuatrimestre,
           anio: data.anio,
@@ -110,7 +109,7 @@ export const userResolver = () => {
         if(!user) throw new GraphQLError('Usuario no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
 
         // Buscamos si existe estado de materia en el usuario
-        const materiaIndex = user.materias?.findIndex(materia => materia.materiaId?.toString() === data.idMateria)
+        const materiaIndex = user.materias?.findIndex(materia => materia.materiaId?.toString() === data.materiaId)
 
         if(materiaIndex === -1) {
           // No existe la materia en el usuario
@@ -121,6 +120,20 @@ export const userResolver = () => {
 
         await user.save()
         return user
+      }
+    },
+    Usuario: {
+      promedioGeneral: (root: IUser) => {
+        let sum = 0
+        let cant = 0
+        root.materias.forEach(m => {
+          if(m.notaFinal) {
+            sum += m.notaFinal
+            cant++
+          }
+        })
+        if(cant === 0) return null
+        return (sum / cant).toFixed(2)
       }
     },
     MateriaUsuario: {

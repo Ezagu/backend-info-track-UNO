@@ -31,6 +31,7 @@ export const userDefs = () => {
       rol: RolUsuario!
       anioIngreso: Int
       materias: [MateriaUsuario]
+      promedioGeneral: Float
     }
 
     type Query {
