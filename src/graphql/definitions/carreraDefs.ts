@@ -9,6 +9,7 @@ export const carreraDefs = () => {
     type Carrera {
         id: ID!
         nombre: String!
+        abreviacion: String!
         duracion: Int!
         descripcion: String
         tituloOtorgado: String!

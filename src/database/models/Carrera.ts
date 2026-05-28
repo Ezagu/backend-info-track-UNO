@@ -9,14 +9,18 @@ const CarreraSchema = new Schema({
         type: Number,
         required: true
     },
+    abreviacion: {
+        type: String,
+        required: true
+    }
+    ,
     descripcion: {
         type: String,
         required: true
     },
     tituloOtorgado: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     cargaHorariaTotal: {
         type: Number, 

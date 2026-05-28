@@ -7,6 +7,7 @@ export const carreraResolver = () => {
         Query: {
             carreras: async () => { 
                 const carreras = await Carrera.find()
+                console.log(carreras)
                 return carreras
             },
             carrera: async (_root: undefined, args: {id: string}) => {
