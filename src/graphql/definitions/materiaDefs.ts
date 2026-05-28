@@ -13,6 +13,7 @@ export const materiaDefs = () => {
       cargaHorariaSemanal: Int
       linkWhatsapp: String
       promocion: Boolean
+      cuatrimestreDictado: [Int]
       correlativas: [Materia]
       planEstudio: [PlanEstudioMateria]
       comisiones: [Comision]

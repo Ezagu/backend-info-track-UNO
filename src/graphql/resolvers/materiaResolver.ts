@@ -61,6 +61,12 @@ export const materiaResolver = () => {
       carreras: async (root: IMateria) => {
         const planEstudio = await PlanEstudio.find({materiaId: root.id}).populate('carreraId')
         return planEstudio.map(plan => (plan.carreraId))
+      },
+      cuatrimestreDictado: async (root: IMateria) => {
+        const comisiones = await Comision.find({
+          materiaId: root.id
+        }).distinct('cuatrimestre')
+        return comisiones
       }
     },
     PlanEstudioMateria: {
