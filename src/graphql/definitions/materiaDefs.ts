@@ -17,6 +17,7 @@ export const materiaDefs = () => {
       planEstudio: [PlanEstudioMateria]
       comisiones: [Comision]
       profesores: [Profesor]
+      carreras: [Carrera]
     }
 
     type Query {

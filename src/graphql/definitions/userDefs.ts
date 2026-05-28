@@ -47,7 +47,7 @@ export const userDefs = () => {
     }
 
     type Mutation {
-      registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String, carreraId: ID, anioIngreso: Int): Usuario
+      registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String!, carreraId: ID!, anioIngreso: Int): Usuario
       loguearUsuario(email: String!, password: String!): String
       establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
       inscribirseEnCarrera(carreraId: ID!): Usuario
