@@ -45,6 +45,9 @@ export const profesorResolver = () =>{
                     return sum / cant
                 }
                 return null
+            },
+            siglas: (root: IProfesor) => {
+                return root.apellido.slice(0,1) + root.nombre.slice(0,1)
             }
         },
         PuntuacionProfesor: {

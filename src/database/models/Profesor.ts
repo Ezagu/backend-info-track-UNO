@@ -5,6 +5,10 @@ const ProfesorSchema = new Schema({
         type: String,
         required: true
     },
+    apellido: {
+        type: String,
+        required: true
+    },
     nombreNormalizado: {
         type: String, 
         required: true
