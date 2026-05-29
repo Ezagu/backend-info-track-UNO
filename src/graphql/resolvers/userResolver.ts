@@ -246,6 +246,9 @@ export const userResolver = () => {
       },
       puntuaciones: async (root: IUser) => {
         return await Puntuacion.find({usuarioId: root.id})
+      },
+      siglas: (root: IUser) => {
+        return root.apellido.slice(0,1) + root.nombre.slice(0,1)
       }
     },
     MateriaUsuario: {

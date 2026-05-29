@@ -33,6 +33,7 @@ export const userDefs = () => {
       id: ID!
       nombre: String!
       apellido: String!
+      siglas: String!
       email: String!
       rol: RolUsuario!
       anioIngreso: Int
