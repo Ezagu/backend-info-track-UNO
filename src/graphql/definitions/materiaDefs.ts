@@ -16,7 +16,8 @@ export const materiaDefs = () => {
       cuatrimestreDictado: [Int]
       correlativas: [Materia]
       planEstudio: [PlanEstudioMateria]
-      comisiones: [Comision]
+      comisionesActuales: [Comision]
+      comisionesAnteriores: [Comision]
       profesores: [Profesor]
       carreras: [Carrera]
     }

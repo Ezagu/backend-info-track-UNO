@@ -45,9 +45,18 @@ export const materiaResolver = () => {
       }
     },
     Materia: {
-      comisiones: async (root: IMateria) => {
-        // Encuentra todas las comisiones que le perteneces a la materia
-        return await Comision.find({materiaId: root.id})
+      comisionesActuales: async (root: IMateria) => {
+        const anio = new Date().getFullYear()
+        const cuatrimestre = new Date().getMonth() < 7 ? 1 : 2
+        console.log(anio, cuatrimestre)
+        return await Comision.find({materiaId: root.id, anio, cuatrimestre})
+      },
+      comisionesAnteriores: async (root: IMateria) => {
+        const cuatrimestreActual = new Date().getMonth() < 7 ? 1 : 2
+        const anioActual = new Date().getFullYear()
+        const anio = cuatrimestreActual === 2 ? anioActual : (anioActual - 1) 
+        const cuatrimestre = cuatrimestreActual === 1 ? 2 : 1
+        return await Comision.find({materiaId: root.id, anio, cuatrimestre})
       },
       profesores: async (root: IMateria) => {
         return await Profesor.find({materias: root.id})
