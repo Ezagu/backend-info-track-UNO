@@ -48,7 +48,6 @@ export const materiaResolver = () => {
       comisionesActuales: async (root: IMateria) => {
         const anio = new Date().getFullYear()
         const cuatrimestre = new Date().getMonth() < 7 ? 1 : 2
-        console.log(anio, cuatrimestre)
         return await Comision.find({materiaId: root.id, anio, cuatrimestre})
       },
       comisionesAnteriores: async (root: IMateria) => {

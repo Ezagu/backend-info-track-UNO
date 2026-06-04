@@ -16,7 +16,7 @@ const PlanEstudioSchema = new Schema({
         required: true
     },
     cuatrimestre: {
-        type: String,   
+        type: Number,   
         required: true
     }
 })  

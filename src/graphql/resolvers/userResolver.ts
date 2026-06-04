@@ -1,4 +1,4 @@
-import type { EstablecerEstadoMateria, EstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
+import type { EstablecerEstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
 import type { Context } from "../../types/auth.js"
 import type { IPuntuacion } from "../../types/puntuacion.js"
 import { Types } from "mongoose"
@@ -11,6 +11,8 @@ import { validateLoginInput, validateRegisterInput, validateEstadoMateriaInput, 
 import { Carrera } from "../../database/models/Carrera.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
 import { Profesor } from "../../database/models/Profesor.js"
+import { PlanEstudio } from "../../database/models/PlanEstudio.js"
+import { Comision } from "../../database/models/Comision.js"
 
 export const userResolver = () => {
   return {
@@ -18,6 +20,47 @@ export const userResolver = () => {
       me: (_root: undefined, _args: undefined, context: Context) => {
         if(!context.currentUser) throw new Error('USUARIO NO IDENTIFICADO')
         return context.currentUser
+      },
+      materiasACursarProximoCuatrimestre: async (_root: undefined, _args: undefined, {currentUser}: Context) => {
+        // Verificamos que este logueado
+        if(!currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
+
+        const idsMateriasEnCondicion = currentUser.materias.map(m => m.materiaId)
+        const materiasCarrerasUsuario = await PlanEstudio.find({ carreraId: currentUser.carreras}).select("materiaId")
+
+        // Materias de las carreras que todavia no curse
+        const idsMateriasCarrerasUsuario = materiasCarrerasUsuario.map(m => {
+          if(!idsMateriasEnCondicion.includes(m.materiaId)) {
+            return m.materiaId
+          }
+        })
+
+        const mes = new Date().getMonth() + 1
+        const cuatrimestre = (mes >= 3 && mes <= 7) ? 2 : 1
+        const year = new Date().getFullYear()
+        const anio = cuatrimestre === 1 ? year : year - 1
+
+        const idsResultados = await Promise.all(
+          idsMateriasCarrerasUsuario.map(async (materiaId) => {
+            if (materiaId === undefined) return null;
+
+            const materia = await Materia.findById(materiaId);
+            if (!materia) return null;
+            
+            // Ver si tengo correlativas
+            const tengoCorrelativas = materia.correlativas.every(c =>
+              idsMateriasEnCondicion.includes(c)
+            );
+
+            if (!tengoCorrelativas) return null
+
+            // Verificar si se dicta el próximo cuatrimestre
+            const seDicta = await Comision.findOne({materiaId, cuatrimestre, anio})
+            if(!seDicta) return null
+            return materiaId
+          })
+        )
+        return await Materia.find({_id: idsResultados})
       }
     },
     Mutation: {
