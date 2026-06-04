@@ -46,6 +46,8 @@ export const userDefs = () => {
     type Query {
       me: Usuario
       materiasACursarProximoCuatrimestre: [Materia]
+      proximosVencimientos: [MateriaUsuario]
+      estadísticasPorCarrera: [EstadisticasCarrera]
     }
 
     type Mutation {

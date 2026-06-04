@@ -61,6 +61,15 @@ export const userResolver = () => {
           })
         )
         return await Materia.find({_id: idsResultados})
+      },
+      proximosVencimientos: async(_root: undefined, _args: undefined, {currentUser}: Context) => {
+        return currentUser?.materias
+          .filter(materia => materia.estado === "REGULARIZADA")
+          .sort((a,b) => {
+            const fechaA = a.vencimiento ? new Date(a.vencimiento).getTime() : Infinity;
+            const fechaB = b.vencimiento ? new Date(b.vencimiento).getTime() : Infinity;
+            return fechaA - fechaB
+          })
       }
     },
     Mutation: {
