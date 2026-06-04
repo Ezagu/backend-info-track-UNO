@@ -21,7 +21,7 @@ type MateriaUser = {
   notaFinal?: number | null
 }
 
-enum EstadoMateria {
+export enum EstadoMateria {
   APROBADA = "APROBADA",
   REGULARIZADA = "REGULARIZADA",
   CURSANDO = "CURSANDO",

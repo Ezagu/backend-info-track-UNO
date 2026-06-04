@@ -1,4 +1,4 @@
-import type { EstablecerEstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
+import type { EstadoMateria, EstablecerEstadoMateria, IUser, LoginUser, MateriaUser, RegisterUser } from "../../types/user.js"
 import type { Context } from "../../types/auth.js"
 import type { IPuntuacion } from "../../types/puntuacion.js"
 import { Types } from "mongoose"
@@ -63,7 +63,10 @@ export const userResolver = () => {
         return await Materia.find({_id: idsResultados})
       },
       proximosVencimientos: async(_root: undefined, _args: undefined, {currentUser}: Context) => {
-        return currentUser?.materias
+        // Verificamos que este logueado
+        if(!currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
+
+        return currentUser.materias
           .filter(materia => materia.estado === "REGULARIZADA")
           .sort((a,b) => {
             const fechaA = a.vencimiento ? new Date(a.vencimiento).getTime() : Infinity;

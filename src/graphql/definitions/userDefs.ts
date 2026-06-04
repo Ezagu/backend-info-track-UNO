@@ -37,9 +37,9 @@ export const userDefs = () => {
       email: String!
       rol: RolUsuario!
       anioIngreso: Int
+      promedioGeneral: Float
       materias: [MateriaUsuario]
       carreras: [Carrera]
-      promedioGeneral: Float
       puntuaciones: [PuntuacionUsuario]
     }
 
@@ -47,7 +47,6 @@ export const userDefs = () => {
       me: Usuario
       materiasACursarProximoCuatrimestre: [Materia]
       proximosVencimientos: [MateriaUsuario]
-      estadísticasPorCarrera: [EstadisticasCarrera]
     }
 
     type Mutation {
