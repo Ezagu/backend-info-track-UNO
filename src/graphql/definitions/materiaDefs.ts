@@ -24,11 +24,16 @@ export const materiaDefs = () => {
     type Query {
       materias(search: String, page: Int, limit: Int): [Materia]
       materia(id: ID!): Materia
+      materiasACursarProximoCuatrimestre: [Materia]
+      proximosVencimientos: [MateriaUsuario]
     }
 
     type Mutation {
       createMateria(nombre: String!, codigo: String!, cargaHoraria: Int!, electiva: Boolean, linkCampus: String, linkWhatsapp: String, promocion: Boolean): Materia
       deleteMateria(id: String!): Materia
+      establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
+      eliminarEstadoMateria(materiaId: String!): Usuario
+      registrarLlamado(materiaId: String!, notaFinal: Int!): Usuario
     }
   `
 }
