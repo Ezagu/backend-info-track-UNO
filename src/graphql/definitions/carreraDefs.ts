@@ -39,5 +39,10 @@ export const carreraDefs = () => {
       carrera(id: ID!): Carrera
       estadisticasPorCarrera: [EstadisticasCarrera]
     }
+
+    type Mutation {
+      inscribirseEnCarrera(carreraId: ID!): Carrera
+      darseBajaCarrera(carreraId: ID!): Carrera
+    }
   ` 
 }

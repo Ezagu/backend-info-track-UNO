@@ -184,24 +184,6 @@ export const userResolver = () => {
         await user.save()
         return user
       },
-      inscribirseEnCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
-        // Validar que el usuario esté logueado
-        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
-
-        // Validar que la carrera exista
-        const carrera = await Carrera.findById(args.carreraId)
-        if(!carrera) throw new GraphQLError('Carrera no encontrada', {extensions: {code: 'CARRERA_NOT_FOUND'}})
-
-        const user = await User.findById(context.currentUser.id)
-
-        // Validar que el usuario no esté inscripto
-        const carreraExists = user?.carreras.find(c => c.toString() === args.carreraId)
-        if(carreraExists) throw new GraphQLError('Usuario ya inscripto en la carrera', {extensions: {code: 'CONFLICT'}})
-
-
-        user?.carreras.push(new Types.ObjectId(args.carreraId))
-        return await user?.save()
-      },
       eliminarEstadoMateria: async (_root: undefined, args: {materiaId: string}, context: Context) => {
         // Validar que el usuario esté logueado
         if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
@@ -255,20 +237,6 @@ export const userResolver = () => {
 
         return user.save()
       },
-      darseBajaCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
-        // Validar que el usuario esté logueado
-        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
-
-        const user = await User.findById(context.currentUser.id)
-        if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
-        
-        // Validar que el usuario este en la carrera
-        const carreraIndex = user.carreras.findIndex(c => c.toString() === args.carreraId)
-        if(carreraIndex === -1) throw new GraphQLError('El usuario no esta inscripto en la carrera', {extensions: {code: 'CARRERA_NOT_FOUND'}})
-
-        user.carreras.splice(carreraIndex, 1)
-        return await user.save()
-      },
       modificarUsuario: async (_root: undefined, args: {carreraId: string}, context: Context) => {
         // Validar que el usuario esté logueado
         if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
@@ -303,7 +271,7 @@ export const userResolver = () => {
         return await Puntuacion.find({usuarioId: root.id})
       },
       siglas: (root: IUser) => {
-        return root.apellido.slice(0,1) + root.nombre.slice(0,1)
+        return root.nombre.slice(0,1) + root.apellido.slice(0,1)
       }
     },
     MateriaUsuario: {

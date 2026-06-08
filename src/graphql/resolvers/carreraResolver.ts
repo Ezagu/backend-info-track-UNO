@@ -1,8 +1,10 @@
+import type { ICarrera } from "../../types/carrera.js"
+import type { Context } from "../../types/auth.js"
+import { Types } from "mongoose"
 import { GraphQLError } from "graphql"
 import { Carrera }  from "../../database/models/Carrera.js"
+import { User } from "../../database/models/User.js"
 import { PlanEstudio } from "../../database/models/PlanEstudio.js"
-import type { Context } from "../../types/auth.js"
-import type { ICarrera } from "../../types/carrera.js"
 
 export const carreraResolver = () => {
   return {
@@ -23,8 +25,8 @@ export const carreraResolver = () => {
 
         return Promise.all(
           carreras.map(async (carrera) => {
-            const todasLasMaterias = await PlanEstudio.find({carreraId: carrera.id}).select('materiaId')
-            const idsMaterias = todasLasMaterias.map(materia => materia.materiaId)
+            const todasLasMaterias = await PlanEstudio.find({carreraId: carrera.id}).populate("materiaId")
+            const idsMaterias = todasLasMaterias.map(materia => materia.materiaId.id)
 
             const materiasUsuario = currentUser.materias.filter(m => 
               idsMaterias.includes(m.materiaId)
@@ -36,13 +38,15 @@ export const carreraResolver = () => {
             const materiasCursando = materiasUsuario.filter(m => m.estado === "CURSANDO")
 
             const idsConEstado = materiasUsuario.map(m => m.materiaId);
-            const materiasFaltantes = todasLasMaterias.filter(m => !idsConEstado.includes(m.materiaId));
+            const planEstudioFaltantes = todasLasMaterias.filter(pe => !idsConEstado.includes(pe.materiaId.id));
+            const materiasFaltantes = planEstudioFaltantes.map(pe => pe.materiaId)
 
             // Promedio solo de aprobadas + promocionadas
             const conNota = [...materiasAprobadas, ...materiasPromocionadas].filter(m => m.notaFinal != null);
             const promedio = conNota.length > 0
-              ? conNota.reduce((acc, m) => acc + m.notaFinal!, 0) / conNota.length
+              ? (conNota.reduce((acc, m) => acc + m.notaFinal!, 0) / conNota.length).toFixed(2)
               : null;
+            const porcentajeCompletado = (((materiasAprobadas.length + materiasPromocionadas.length) / todasLasMaterias.length) * 100).toFixed(2)
 
             return {
               carrera,
@@ -51,7 +55,7 @@ export const carreraResolver = () => {
               regularizadas: materiasRegularizadas.length,
               cursando: materiasCursando.length,
               faltantes: materiasFaltantes.length,
-              porcentajeCompletado: ((materiasAprobadas.length + materiasPromocionadas.length) / todasLasMaterias.length) * 100,
+              porcentajeCompletado,
               promedio,
               materiasAprobadas,
               materiasPromocionadas,
@@ -61,6 +65,40 @@ export const carreraResolver = () => {
             }
           })
         )
+      }
+    },
+    Mutation: {
+      inscribirseEnCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        // Validar que la carrera exista
+        const carrera = await Carrera.findById(args.carreraId)
+        if(!carrera) throw new GraphQLError('Carrera no encontrada', {extensions: {code: 'CARRERA_NOT_FOUND'}})
+
+        const user = await User.findById(context.currentUser.id)
+
+        // Validar que el usuario no esté inscripto
+        const carreraExists = user?.carreras.find(c => c.toString() === args.carreraId)
+        if(carreraExists) throw new GraphQLError('Usuario ya inscripto en la carrera', {extensions: {code: 'CONFLICT'}})
+
+
+        user?.carreras.push(new Types.ObjectId(args.carreraId))
+        return await user?.save()
+      },
+      darseBajaCarrera: async (_root: undefined, args: {carreraId: string}, context: Context) => {
+        // Validar que el usuario esté logueado
+        if(!context.currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: 'UNAUTHORIZED'}})
+
+        const user = await User.findById(context.currentUser.id)
+        if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
+        
+        // Validar que el usuario este en la carrera
+        const carreraIndex = user.carreras.findIndex(c => c.toString() === args.carreraId)
+        if(carreraIndex === -1) throw new GraphQLError('El usuario no esta inscripto en la carrera', {extensions: {code: 'CARRERA_NOT_FOUND'}})
+
+        user.carreras.splice(carreraIndex, 1)
+        return await user.save()
       }
     },
     Carrera: {

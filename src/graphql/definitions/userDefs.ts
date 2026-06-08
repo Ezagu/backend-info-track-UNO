@@ -53,10 +53,8 @@ export const userDefs = () => {
       registrarUsuario(nombre: String!, apellido: String!, password: String!, email: String!, carreraId: ID!, anioIngreso: Int): Usuario
       loguearUsuario(email: String!, password: String!): String
       establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
-      inscribirseEnCarrera(carreraId: ID!): Usuario
       eliminarEstadoMateria(materiaId: String!): Usuario
       registrarLlamado(materiaId: String!, notaFinal: Int!): Usuario
-      darseBajaCarrera(carreraId: ID!): Usuario
       modificarUsuario(nombre: String, apellido: String, anioIngreso: Int): Usuario
     }
   `
