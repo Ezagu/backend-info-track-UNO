@@ -37,10 +37,12 @@ const EstadoMateria = z.object({
     .optional(),
   anio: z.int()
     .min(2015, 'Año inválido')
-    .max(new Date().getFullYear(), 'Año inválido'),
+    .max(new Date().getFullYear(), 'Año inválido')
+    .optional(),
   cuatrimestre: z.int()
     .min(1, 'Cuatrimestre inválido')
     .max(2, 'Cuatrimestre inválido')
+    .optional()
 })
 
 const ActualizarUsuario = z.object({

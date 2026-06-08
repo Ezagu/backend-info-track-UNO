@@ -15,8 +15,8 @@ export type IUser = {
 type MateriaUser = {
   materiaId: string
   estado: EstadoMateria
-  anio: number
-  cuatrimestre: number
+  anio?: number
+  cuatrimestre?: number
   llamadosUsados?: number | null
   vencimiento?: Date | null
   notaFinal?: number | null

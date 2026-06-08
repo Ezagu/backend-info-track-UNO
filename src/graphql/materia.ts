@@ -45,7 +45,7 @@ export const typeDefs = `
   type Mutation {
     createMateria(nombre: String!, codigo: String!, cargaHoraria: Int!, electiva: Boolean, linkCampus: String, linkWhatsapp: String, promocion: Boolean): Materia
     deleteMateria(id: String!): Materia
-    establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int!, cuatrimestre: Int!, nota: Int): Usuario
+    establecerEstadoMateria(materiaId: String!, estado: EstadoMateria!, anio: Int, cuatrimestre: Int, nota: Int): Usuario
     eliminarEstadoMateria(materiaId: String!): Usuario
     registrarLlamado(materiaId: String!, notaFinal: Int!): Usuario
   }
@@ -153,15 +153,17 @@ export const resolvers = {
       const newMateria: MateriaUser = {
         materiaId: data.materiaId,
         estado: data.estado as EstadoMateria,
-        cuatrimestre: data.cuatrimestre,
-        anio: data.anio,
         notaFinal: null,
         llamadosUsados: null,
         vencimiento: null
       }
 
+      if(data.anio) newMateria.anio = data.anio
+      if(data.cuatrimestre) newMateria.cuatrimestre = data.cuatrimestre 
+
       // Agregar datos si el estado es regularizada
       if(data.estado === "REGULARIZADA") {
+        if(!data.anio || !data.cuatrimestre) throw new GraphQLError('Debes ingresar año y cuatrimestre', {extensions: {code: 'MISSING_ARGUMENT'}})
         newMateria.llamadosUsados = 0
         newMateria.vencimiento = new Date(data.anio + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
       }
@@ -197,9 +199,9 @@ export const resolvers = {
 
       const user = await User.findById(context.currentUser.id)
       if(!user) throw new GraphQLError('Usuario no identificado no encontrado', {extensions: {code: 'USER_NOT_FOUND'}})
-      const materiaIndex = user.materias.findIndex(m => m.materiaId.toString() === args.materiaId)
 
       // Validar que el usuario tenga la materia
+      const materiaIndex = user.materias.findIndex(m => m.materiaId.toString() === args.materiaId)
       if(materiaIndex === -1) throw new GraphQLError('El usuario no tiene registrada esta materia', {extensions: {code: 'MATERIA_NOT_FOUND'}})
 
       // Eliminar materia
