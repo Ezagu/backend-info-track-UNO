@@ -19,7 +19,6 @@ export const materiaDefs = () => {
       comisionesActuales: [Comision]
       comisionesAnteriores: [Comision]
       profesores: [Profesor]
-      carreras: [Carrera]
     }
 
     type Query {
