@@ -1,12 +1,12 @@
+import type { IPuntuacion } from "../../types/puntuacion.js"
 import type { IProfesor } from "../../types/profesor.js"
 import type { SearchInput } from "../../types/global.js"
 import type { Types } from "mongoose"
 import { Profesor } from "../../database/models/Profesor.js"
-import { normalizarString } from "../../helpers/normalizarString.js"
 import { Materia } from "../../database/models/Materia.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
-import type { IPuntuacion } from "../../types/puntuacion.js"
 import { User } from "../../database/models/User.js"
+import { normalizarString } from "../../helpers/normalizarString.js"
 
 export const profesorResolver = () =>{
     return {

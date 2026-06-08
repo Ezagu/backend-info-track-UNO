@@ -1,6 +1,6 @@
-import { GraphQLError } from "graphql"
-import type { Context } from "../../types/auth.js"
 import type { ModificarPuntuacionInput, PuntuarProfesorInput } from "../../types/puntuacion.js"
+import type { Context } from "../../types/auth.js"
+import { GraphQLError } from "graphql"
 import { Profesor } from "../../database/models/Profesor.js"
 import { Puntuacion } from "../../database/models/Puntacion.js"
 import { ValidateModificarPuntuacion, ValidatePuntuarProfesor } from "../../validators/puntuacionValidator.js"

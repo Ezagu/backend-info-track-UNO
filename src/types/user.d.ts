@@ -1,14 +1,15 @@
 import type { Types } from "mongoose"
 
 export type IUser = {
-  id: Types.ObjectId
+  _id: Types.ObjectId
+  id: string
   nombre: string
   apellido: string
   password: string
   email: string
   rol: string
   materias: MateriaUser[]
-  carreras: string[]
+  carreras: Types.ObjectId[]
 }
 
 type MateriaUser = {
@@ -21,12 +22,7 @@ type MateriaUser = {
   notaFinal?: number | null
 }
 
-export enum EstadoMateria {
-  APROBADA = "APROBADA",
-  REGULARIZADA = "REGULARIZADA",
-  CURSANDO = "CURSANDO",
-  PROMOCIONADA = "PROMOCIONADA"
-}
+type EstadoMateria = "APROBADA" | "REGULARIZADA" | "CURSANDO" | "PROMOCIONADA"
 
 // Inputs en mutation
 export type RegisterUser = {
