@@ -4,15 +4,14 @@ import { materiaDefs } from "./definitions/materiaDefs.js"
 import { planEstudioDefs } from "./definitions/planEstudioDefs.js"
 import { profesorDefs } from "./definitions/profesorDefs.js"
 import { puntuacionDefs } from "./definitions/puntuacionDefs.js"
-import { userDefs } from "./definitions/userDefs.js"
 import { carreraResolver } from "./resolvers/carreraResolver.js"
 import { materiaResolver } from "./resolvers/materiaResolver.js"
 import { profesorResolver } from "./resolvers/profesorResolver.js"
 import { puntuacionResolver } from "./resolvers/puntuacionResolver.js"
-import { userResolver } from "./resolvers/userResolver.js"
+import { resolvers as userResolver, typeDefs as userDefs } from "./user.js"
 
 export const typeDefs = [
-  userDefs(),
+  userDefs,
   materiaDefs(),
   carreraDefs(),
   comisionDefs(),
@@ -22,7 +21,7 @@ export const typeDefs = [
 ]
 
 export const resolvers = [
-  userResolver(),
+  userResolver,
   materiaResolver(),
   carreraResolver(),
   profesorResolver(),
