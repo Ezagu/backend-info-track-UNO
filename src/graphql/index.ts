@@ -1,3 +1,4 @@
+import { resolvers as fechaImportanteResolver, typeDefs as fechaImportanteDefs } from "./fechaImportante.js"
 import { resolvers as userResolver, typeDefs as userDefs } from "./user.js"
 import { resolvers as materiaResolver, typeDefs as materiaDefs } from "./materia.js"
 import { resolvers as carreraResolver, typeDefs as carreraDefs } from "./carrera.js"
@@ -13,7 +14,8 @@ export const typeDefs = [
   comisionDefs,
   planEstudioDefs,
   profesorDefs,
-  puntuacionDefs
+  puntuacionDefs,
+  fechaImportanteDefs
 ]
 
 export const resolvers = [
@@ -21,5 +23,6 @@ export const resolvers = [
   materiaResolver,
   carreraResolver,
   profesorResolver,
-  puntuacionResolver
+  puntuacionResolver,
+  fechaImportanteResolver
 ]
