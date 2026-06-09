@@ -15,6 +15,10 @@ export const typeDefs = `
     fecha: String!
   }
 
+  type Query {
+    misPuntuaciones: [Puntuacion]
+  }
+
   type Mutation {
     puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Puntuacion
     modificarPuntuacionProfesor(puntuacionId: ID!, puntuacion: Float, comentario: String): Puntuacion
@@ -23,6 +27,14 @@ export const typeDefs = `
 `
 
 export const resolvers = {
+  Query: {
+    misPuntuaciones: async (_root: undefined, _args: undefined, context: Context) => {
+      // Validar que este logueado el usuario
+      if(!context.currentUser) throw new GraphQLError('No identificado', {extensions: {code: "UNAUTHORIZED"}})
+
+      return await Puntuacion.find({usuarioId: context.currentUser.id})
+    }
+  },
   Mutation: {
     puntuarProfesor: async (_root: undefined, args: PuntuarProfesorInput, context: Context) => {
       // Validar que este logueado el usuario
