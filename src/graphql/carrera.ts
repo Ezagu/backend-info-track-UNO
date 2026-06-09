@@ -33,7 +33,7 @@ export const typeDefs = `
     id: ID!
     nombre: String!
     abreviacion: String!
-    duracion: Int!
+    duracion: Float!
     descripcion: String
     tituloOtorgado: String!
     cargaHorariaTotal: Int!
