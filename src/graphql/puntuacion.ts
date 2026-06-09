@@ -7,6 +7,7 @@ import { ValidateModificarPuntuacion, ValidatePuntuarProfesor } from "../validat
 
 export const typeDefs = `
   type Puntuacion {
+    id: String!
     usuarioId: String!
     profesorId: String!
     puntuacion: Float!
@@ -17,6 +18,7 @@ export const typeDefs = `
   type Mutation {
     puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Puntuacion
     modificarPuntuacionProfesor(puntuacionId: ID!, puntuacion: Float, comentario: String): Puntuacion
+    eliminarPuntuacion(puntuacionId: ID!): Puntuacion
   }
 `
 
@@ -71,6 +73,20 @@ export const resolvers = {
       puntuacion.puntuacion = data.puntuacion || puntuacion.puntuacion
 
       return await puntuacion.save()
+    },
+    eliminarPuntuacion: async (_root: undefined, args: {puntuacionId: string}, context: Context) => {
+      // Validar que este logueado el usuario
+      if(!context.currentUser) throw new GraphQLError('No identificado', {extensions: {code: "UNAUTHORIZED"}})
+
+      // Validar que exista la puntuacion
+      const puntuacion = await Puntuacion.findById(args.puntuacionId)
+      if(!puntuacion) throw new GraphQLError('No existe la puntuacion', {extensions: {code: "PUNTUACION_NOT_FOUND"}})
+      
+      // Validar que la puntuacion sea del usuario identificado
+      if(puntuacion.usuarioId?.toString() !== context.currentUser.id.toString()) throw new GraphQLError('Puntuacion no pertenece a usuario identificado', {extensions: {code: "FORBIDDEN"}})
+
+      await puntuacion.deleteOne()
+      return puntuacion
     }
   }
 }
