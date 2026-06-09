@@ -9,10 +9,7 @@ const FechaImportanteSchema = new Schema({
     type: Date,
     required: true
   },
-  fechaFin: {
-    type: Date,
-    required: true
-  },
+  fechaFin: Date,
   descripcion: {
     type: String,
     required: true

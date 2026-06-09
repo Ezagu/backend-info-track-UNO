@@ -15,7 +15,7 @@ export const typeDefs = `
     id: ID!
     tipo: TipoFecha!
     fechaInicio: String!
-    fechaFin: String!
+    fechaFin: String
     descripcion: String!
   }
 
@@ -27,7 +27,7 @@ export const typeDefs = `
     crearFechaImportante(
       tipo: TipoFecha!
       fechaInicio: String!
-      fechaFin: String!
+      fechaFin: String
       descripcion: String!
     ): FechaImportante
   }
@@ -39,10 +39,11 @@ export const resolvers = {
       const hoy = new Date()
 
       return await FechaImportante.find({
-        fechaFin: { $gte: hoy }
-      }).sort({
-        fechaInicio: 1
-      })
+        $or: [
+          {fechaFin: { $gte: hoy }},
+          {fechaFin: null, fechaInicio: { $gte: hoy }}
+        ]
+      }).sort({fechaInicio: 1})
     }
   },
 

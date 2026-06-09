@@ -1,5 +1,5 @@
 import * as z from 'zod'
-import { GraphQLError } from 'graphql'
+import { formatearErrorValidacion } from '../helpers/formatearErrorValidacion.js'
 
 const FechaImportanteSchema = z.object({
   tipo: z.enum([
@@ -10,19 +10,13 @@ const FechaImportanteSchema = z.object({
     'INICIO_CURSADA',
     'FIN_CURSADA'
   ]),
-  fechaInicio: z.string(),
-  fechaFin: z.string(),
+  fechaInicio: z.date(),
+  fechaFin: z.date().optional(),
   descripcion: z.string()
     .min(5)
     .max(300)
 })
 
 export const validateFechaImportanteInput = (input: unknown) => {
-  const result = FechaImportanteSchema.safeParse(input)
-
-  if (!result.success) {
-    throw new GraphQLError('Error de validación')
-  }
-
-  return result.data
+  return formatearErrorValidacion(z.safeParse(FechaImportanteSchema, input))
 }
