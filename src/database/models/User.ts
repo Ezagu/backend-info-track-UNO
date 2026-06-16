@@ -11,14 +11,8 @@ const MateriaUsuarioSchema = new Schema({
     enum: ["PROMOCIONADA", "APROBADA", "REGULARIZADA", "CURSANDO"],
     required: true
   },
-  anio: {
-    type: Number,
-    required: true
-  },
-  cuatrimestre: {
-    type: Number,
-    required: true
-  },
+  anio: Number,
+  cuatrimestre: Number,
   llamadosUsados: Number,
   vencimiento: Date,
   notaFinal: Number

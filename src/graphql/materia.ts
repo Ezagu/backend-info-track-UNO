@@ -153,26 +153,36 @@ export const resolvers = {
       const newMateria: MateriaUser = {
         materiaId: data.materiaId,
         estado: data.estado as EstadoMateria,
-        notaFinal: null,
-        llamadosUsados: null,
-        vencimiento: null
       }
 
-      if(data.anio) newMateria.anio = data.anio
-      if(data.cuatrimestre) newMateria.cuatrimestre = data.cuatrimestre 
+      if(data.anio)
+        newMateria.anio = data.anio
 
-      // Agregar datos si el estado es regularizada
+      if(data.cuatrimestre)
+        newMateria.cuatrimestre = data.cuatrimestre
+
+      // Agregar datos segun el estado
       if(data.estado === "REGULARIZADA") {
         if(!data.anio || !data.cuatrimestre) throw new GraphQLError('Debes ingresar año y cuatrimestre', {extensions: {code: 'MISSING_ARGUMENT'}})
         newMateria.llamadosUsados = 0
         newMateria.vencimiento = new Date(data.anio + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
       }
 
-      // Agregar datos si el estado es aprobada o promocionada
+      if(data.estado === "CURSANDO") {
+        newMateria.anio = new Date().getFullYear()
+        newMateria.cuatrimestre = (new Date().getMonth() + 1) <= 8 ? 1 : 2
+      }
+
       if(data.estado === "APROBADA" || data.estado === "PROMOCIONADA") {
-        if(!data.nota) throw new GraphQLError('Debes ingresar una nota numérica', {extensions: {code: 'MISSING_ARGUMENT'}})
-        if(data.nota < 4) throw new GraphQLError('Para promocionar o aprobar la nota debe ser superior a 4', {extensions: {code: 'CONFLICT'}})
-        if(data.estado === "PROMOCIONADA" && data.nota < 7) throw new GraphQLError('Para promocionar la nota debe ser superior a 7', {extensions: {code: 'CONFLICT'}})
+        if(!data.nota) 
+          throw new GraphQLError('Debes ingresar una nota numérica', {extensions: {code: 'MISSING_ARGUMENT'}})
+
+        if(data.nota < 4) 
+          throw new GraphQLError('Para promocionar o aprobar la nota debe ser superior a 4', {extensions: {code: 'CONFLICT'}})
+
+        if(data.estado === "PROMOCIONADA" && data.nota < 7) 
+          throw new GraphQLError('Para promocionar la nota debe ser superior a 7', {extensions: {code: 'CONFLICT'}})
+
         newMateria.notaFinal = data.nota
       }
 

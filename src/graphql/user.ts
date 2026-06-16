@@ -27,8 +27,8 @@ export const typeDefs = `
 
   type MateriaUsuario {
     materia: Materia!
-    anio: Int!
-    cuatrimestre: Int!
+    anio: Int
+    cuatrimestre: Int
     notaFinal: Int
     estado: EstadoMateria!
     llamadosUsados: Int
