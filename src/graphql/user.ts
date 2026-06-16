@@ -38,6 +38,8 @@ export const typeDefs = `
     estado: EstadoMateria!
     llamadosUsados: Int
     vencimiento: Vencimiento
+    updatedAt: String
+    createdAt: String
   }
 
   type PuntuacionUsuario {

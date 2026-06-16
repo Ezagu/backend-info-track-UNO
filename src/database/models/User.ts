@@ -19,7 +19,7 @@ const MateriaUsuarioSchema = new Schema({
     anio: Number
   },
   notaFinal: Number
-})
+}, { timestamps: true })
 
 const UsuarioSchema = new Schema({
   nombre: {

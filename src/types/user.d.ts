@@ -23,6 +23,8 @@ type MateriaUser = {
     anio: number
   }
   notaFinal?: number | null
+  createdAt: string
+  updatedAt: string
 }
 
 type EstadoMateria = "APROBADA" | "REGULARIZADA" | "CURSANDO" | "PROMOCIONADA"
