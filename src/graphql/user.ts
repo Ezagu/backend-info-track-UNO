@@ -25,6 +25,11 @@ export const typeDefs = `
     ADMIN
   }
 
+  type Vencimiento {
+    fecha: Int
+    anio: Int
+  }
+
   type MateriaUsuario {
     materia: Materia!
     anio: Int
@@ -32,7 +37,7 @@ export const typeDefs = `
     notaFinal: Int
     estado: EstadoMateria!
     llamadosUsados: Int
-    vencimiento: String
+    vencimiento: Vencimiento
   }
 
   type PuntuacionUsuario {

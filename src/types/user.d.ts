@@ -18,7 +18,10 @@ type MateriaUser = {
   anio?: number
   cuatrimestre?: number
   llamadosUsados?: number | null
-  vencimiento?: Date | null
+  vencimiento?: {
+    fecha: number
+    anio: number
+  }
   notaFinal?: number | null
 }
 

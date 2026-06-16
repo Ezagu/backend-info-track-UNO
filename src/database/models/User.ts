@@ -14,7 +14,10 @@ const MateriaUsuarioSchema = new Schema({
   anio: Number,
   cuatrimestre: Number,
   llamadosUsados: Number,
-  vencimiento: Date,
+  vencimiento: {
+    fecha: Number,
+    anio: Number
+  },
   notaFinal: Number
 })
 

@@ -165,7 +165,10 @@ export const resolvers = {
       if(data.estado === "REGULARIZADA") {
         if(!data.anio || !data.cuatrimestre) throw new GraphQLError('Debes ingresar año y cuatrimestre', {extensions: {code: 'MISSING_ARGUMENT'}})
         newMateria.llamadosUsados = 0
-        newMateria.vencimiento = new Date(data.anio + 2, data.cuatrimestre === 1 ? 3 : 8, 1)
+        newMateria.vencimiento = {
+          fecha: data.cuatrimestre === 1 ? 1 : 2,
+          anio: data.anio + 2
+        }
       }
 
       if(data.estado === "CURSANDO") {
