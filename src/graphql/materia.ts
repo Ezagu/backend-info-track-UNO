@@ -198,9 +198,15 @@ export const resolvers = {
 
       if(materiaIndex === -1) {
         // No existe la materia en el usuario
-        user.materias.push(newMateria)
+        user.materias.unshift(newMateria)
       } else {
-        user.materias[materiaIndex]?.set(newMateria)
+        // Ya existe: la actualizamos y la movemos al principio
+        const existing = user.materias[materiaIndex]
+        existing?.set(newMateria)
+        if (existing) {
+          user.materias.splice(materiaIndex, 1) // la sacamos de su posición actual
+          user.materias.unshift(existing)       // la insertamos al principio
+        }
       }
 
       await user.save()
