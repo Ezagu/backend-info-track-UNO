@@ -5,6 +5,7 @@ import { GraphQLError } from "graphql"
 import { Carrera }  from "../database/models/Carrera.js"
 import { User } from "../database/models/User.js"
 import { PlanEstudio } from "../database/models/PlanEstudio.js"
+import type { IMateria } from "../types/materia.js"
 
 export const typeDefs = `
   type EstadisticasCarrera {
@@ -70,7 +71,7 @@ export const resolvers = {
 
       return Promise.all(
         carreras.map(async (carrera) => {
-          const todasLasMaterias = await PlanEstudio.find({carreraId: carrera.id}).populate("materiaId")
+          const todasLasMaterias = await PlanEstudio.find({carreraId: carrera.id}).populate<{ materiaId: IMateria }>("materiaId")
           const idsMaterias = todasLasMaterias.map(materia => materia.materiaId.id)
 
           const materiasUsuario = currentUser.materias.filter(m => 

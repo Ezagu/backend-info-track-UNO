@@ -15,16 +15,16 @@ export type IUser = {
 type MateriaUser = {
   materiaId: string
   estado: EstadoMateria
-  anio?: number
-  cuatrimestre?: number
+  anio?: number | null
+  cuatrimestre?: number | null
   llamadosUsados?: number | null
   vencimiento?: {
-    fecha: number
-    anio: number
-  }
+    fecha?: number | null
+    anio?: number | null
+  } | null
   notaFinal?: number | null
-  createdAt: string
-  updatedAt: string
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 type EstadoMateria = "APROBADA" | "REGULARIZADA" | "CURSANDO" | "PROMOCIONADA"

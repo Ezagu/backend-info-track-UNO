@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import { connect } from "./database/connection.js"
 import { typeDefs, resolvers } from "./graphql/index.js"
 import { context } from "./graphql/context.js"
+import type { Context } from "./types/auth.js"
 
 // Importa las variables de entorno
 dotenv.config()
@@ -12,10 +13,7 @@ dotenv.config()
 connect()
 
 //Crear server
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-})
+const server = new ApolloServer<Context>({typeDefs, resolvers})
 
 //Levantar server
 const { url } = await startStandaloneServer(server, {context})

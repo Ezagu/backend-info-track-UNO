@@ -114,11 +114,17 @@ export const resolvers = {
       // Verificamos que este logueado
       if(!currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
 
+      const vencimientoToDate = (v: { fecha?: number | null; anio?: number | null }) => {
+        if (v.fecha == null || v.anio == null) return null
+        const mes = v.fecha === 1 ? 2 : 7
+        return new Date(v.anio, mes, 1)
+      }
+
       return currentUser.materias
         .filter(materia => materia.estado === "REGULARIZADA")
         .sort((a,b) => {
-          const fechaA = a.vencimiento ? new Date(a.vencimiento).getTime() : Infinity;
-          const fechaB = b.vencimiento ? new Date(b.vencimiento).getTime() : Infinity;
+          const fechaA = a.vencimiento ? vencimientoToDate(a.vencimiento)?.getTime() ?? Infinity : Infinity
+          const fechaB = b.vencimiento ? vencimientoToDate(b.vencimiento)?.getTime() ?? Infinity : Infinity
           return fechaA - fechaB
         })
     }
