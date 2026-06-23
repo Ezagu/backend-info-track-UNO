@@ -57,7 +57,12 @@ export const resolvers = {
       return await Materia.find({_id: root.materias})
     },
     puntuaciones: async (root: IProfesor) => {
-      return await Puntuacion.find({profesorId: root.id})
+      const puntuaciones = await Puntuacion.find({profesorId: root.id}).populate("usuarioId")
+      return puntuaciones.map(p => ({
+        ...p.toObject(),
+        id: p._id.toString(),
+        usuario: p.usuarioId
+      }))
     },
     cantidadPuntuaciones: async (root: IProfesor) => {
       return await Puntuacion.countDocuments({profesorId: root.id})

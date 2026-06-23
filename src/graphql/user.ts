@@ -43,6 +43,7 @@ export const typeDefs = `
   }
 
   type PuntuacionUsuario {
+    id: ID!
     profesor: Profesor
     puntuacion: Float!
     comentario: String

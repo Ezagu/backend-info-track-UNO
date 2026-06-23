@@ -8,9 +8,9 @@ import { ValidateModificarPuntuacion, ValidatePuntuarProfesor } from "../validat
 export const typeDefs = `
   type Puntuacion {
     id: String!
-    usuarioId: String!
-    profesorId: String!
-    puntuacion: Float!
+    usuario: Usuario!
+    profesor: Profesor!
+    puntuacion: Int!
     comentario: String
     fecha: String!
   }
@@ -20,8 +20,8 @@ export const typeDefs = `
   }
 
   type Mutation {
-    puntuarProfesor(profesorId: ID!, puntuacion: Float!, comentario: String): Puntuacion
-    modificarPuntuacionProfesor(puntuacionId: ID!, puntuacion: Float, comentario: String): Puntuacion
+    puntuarProfesor(profesorId: ID!, puntuacion: Int!, comentario: String): Puntuacion
+    modificarPuntuacionProfesor(puntuacionId: ID!, puntuacion: Int, comentario: String): Puntuacion
     eliminarPuntuacion(puntuacionId: ID!): Puntuacion
   }
 `
@@ -32,7 +32,15 @@ export const resolvers = {
       // Validar que este logueado el usuario
       if(!context.currentUser) throw new GraphQLError('No identificado', {extensions: {code: "UNAUTHORIZED"}})
 
-      return await Puntuacion.find({usuarioId: context.currentUser.id})
+      const puntuaciones = await Puntuacion.find({ usuarioId: context.currentUser.id })
+        .populate("profesorId")
+
+      return puntuaciones.map(p => ({
+        ...p.toObject(),
+        id: p._id.toString(),
+        profesor: p.profesorId,
+        usuario: context.currentUser
+      }))
     }
   },
   Mutation: {
@@ -61,7 +69,12 @@ export const resolvers = {
       if(data.comentario) puntuacion.comentario = data.comentario
       // Guardar en la base de datos
       await puntuacion.save()
-      return puntuacion
+      return {
+        ...puntuacion.toObject(),
+        id: puntuacion._id.toString(),
+        profesor,
+        usuario: context.currentUser
+      }
     },
     modificarPuntuacionProfesor: async(_root: undefined, args: ModificarPuntuacionInput, context: Context) => {
       // Validar que este logueado el usuario
@@ -76,6 +89,9 @@ export const resolvers = {
       // Validar que exista la puntuacion
       const puntuacion = await Puntuacion.findById(data.puntuacionId)
       if(!puntuacion) throw new GraphQLError('No existe la puntuacion', {extensions: {code: "PUNTUACION_NOT_FOUND"}})
+
+      const profesor = await Profesor.findById(puntuacion.profesorId)
+      if(!profesor) throw new GraphQLError('No se encontró el profesor', {extensions: {code: "PROFESOR_NOT_FOUND"}})
       
       // Validar que la puntuacion sea del usuario identificado
       if(puntuacion.usuarioId?.toString() !== context.currentUser.id.toString()) throw new GraphQLError('Puntuacion no pertenece a usuario identificado', {extensions: {code: "FORBIDDEN"}})
@@ -84,7 +100,14 @@ export const resolvers = {
       puntuacion.comentario = data.comentario || puntuacion.comentario || null
       puntuacion.puntuacion = data.puntuacion || puntuacion.puntuacion
 
-      return await puntuacion.save()
+      await puntuacion.save()
+      
+      return {
+        ...puntuacion.toObject(),
+        id: puntuacion._id.toString(),
+        profesor,
+        usuario: context.currentUser
+      }
     },
     eliminarPuntuacion: async (_root: undefined, args: {puntuacionId: string}, context: Context) => {
       // Validar que este logueado el usuario
