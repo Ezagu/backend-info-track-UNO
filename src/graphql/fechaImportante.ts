@@ -2,15 +2,6 @@ import { FechaImportante } from "../database/models/FechaImportante.js"
 import { validateFechaImportanteInput } from "../validators/fechaImportanteValidator.js"
 
 export const typeDefs = `
-  enum TipoFecha {
-    PARO
-    FERIADO
-    INSCRIPCION_MATERIAS
-    INSCRIPCION_FINALES
-    INICIO_CURSADA
-    FIN_CURSADA
-  }
-
   type FechasPorMes {
     mes: Int!      
     anio: Int!
@@ -19,7 +10,7 @@ export const typeDefs = `
 
   type FechaImportante {
     id: ID!
-    tipo: TipoFecha!
+    titulo: String!
     fechaInicio: String!
     fechaFin: String
     descripcion: String!
@@ -32,7 +23,7 @@ export const typeDefs = `
 
   type Mutation {
     crearFechaImportante(
-      tipo: TipoFecha!
+      titulo: String!
       fechaInicio: String!
       fechaFin: String
       descripcion: String!

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const FechaImportanteSchema = new Schema({
-  tipo: {
+  titulo: {
     type: String,
     required: true
   },
