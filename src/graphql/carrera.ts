@@ -45,7 +45,7 @@ export const typeDefs = `
   type Query {
     carreras: [Carrera]
     carrera(id: ID!): Carrera
-    estadisticasPorCarrera: [EstadisticasCarrera]
+    estadisticasPorCarrera(carreraId: ID!): EstadisticasCarrera
   }
 
   type Mutation {
@@ -63,54 +63,48 @@ export const resolvers = {
     carrera: async (_root: undefined, args: {id: string}) => {
       return await Carrera.findById(args.id)
     },
-    estadisticasPorCarrera: async (_root: undefined, _args: undefined, {currentUser}: Context) => {
-      // Verificamos que este logueado
-      if(!currentUser) throw new GraphQLError('Usuario no identificado', {extensions: {code: "UNAUTHORIZED"}})
+    estadisticasPorCarrera: async (_root: undefined, args: { carreraId: string }, { currentUser }: Context) => {
+      if (!currentUser) throw new GraphQLError('Usuario no identificado', { extensions: { code: "UNAUTHORIZED" } })
 
-      const carreras = await Carrera.find({_id: currentUser.carreras});
+      const carrera = await Carrera.findById(args.carreraId)
+      if (!carrera) throw new GraphQLError('Carrera no encontrada', { extensions: { code: 'CARRERA_NOT_FOUND' } })
 
-      return Promise.all(
-        carreras.map(async (carrera) => {
-          const todasLasMaterias = await PlanEstudio.find({carreraId: carrera.id}).populate<{ materiaId: IMateria }>("materiaId")
-          const idsMaterias = todasLasMaterias.map(materia => materia.materiaId.id)
+      const todasLasMaterias = await PlanEstudio.find({ carreraId: carrera.id }).populate<{ materiaId: IMateria }>("materiaId")
+      const idsMaterias = todasLasMaterias.map(materia => materia.materiaId.id)
 
-          const materiasUsuario = currentUser.materias.filter(m => 
-            idsMaterias.includes(m.materiaId)
-          )
+      const materiasUsuario = currentUser.materias.filter(m => idsMaterias.includes(m.materiaId))
 
-          const materiasAprobadas = materiasUsuario.filter(m => m.estado === "APROBADA")
-          const materiasPromocionadas = materiasUsuario.filter(m => m.estado === "PROMOCIONADA")
-          const materiasRegularizadas = materiasUsuario.filter(m => m.estado === "REGULARIZADA")
-          const materiasCursando = materiasUsuario.filter(m => m.estado === "CURSANDO")
+      const materiasAprobadas = materiasUsuario.filter(m => m.estado === "APROBADA")
+      const materiasPromocionadas = materiasUsuario.filter(m => m.estado === "PROMOCIONADA")
+      const materiasRegularizadas = materiasUsuario.filter(m => m.estado === "REGULARIZADA")
+      const materiasCursando = materiasUsuario.filter(m => m.estado === "CURSANDO")
 
-          const idsConEstado = materiasUsuario.map(m => m.materiaId);
-          const planEstudioFaltantes = todasLasMaterias.filter(pe => !idsConEstado.includes(pe.materiaId.id));
-          const materiasFaltantes = planEstudioFaltantes.map(pe => pe.materiaId)
+      const idsConEstado = materiasUsuario.map(m => m.materiaId)
+      const planEstudioFaltantes = todasLasMaterias.filter(pe => !idsConEstado.includes(pe.materiaId.id))
+      const materiasFaltantes = planEstudioFaltantes.map(pe => pe.materiaId)
 
-          // Promedio solo de aprobadas + promocionadas
-          const conNota = [...materiasAprobadas, ...materiasPromocionadas].filter(m => m.notaFinal != null);
-          const promedio = conNota.length > 0
-            ? (conNota.reduce((acc, m) => acc + m.notaFinal!, 0) / conNota.length).toFixed(2)
-            : null;
-          const porcentajeCompletado = (((materiasAprobadas.length + materiasPromocionadas.length) / todasLasMaterias.length) * 100).toFixed(2)
+      const conNota = [...materiasAprobadas, ...materiasPromocionadas].filter(m => m.notaFinal != null)
+      const promedio = conNota.length > 0
+        ? (conNota.reduce((acc, m) => acc + m.notaFinal!, 0) / conNota.length).toFixed(2)
+        : null
 
-          return {
-            carrera,
-            aprobadas: materiasAprobadas.length,
-            promocionadas: materiasPromocionadas.length,
-            regularizadas: materiasRegularizadas.length,
-            cursando: materiasCursando.length,
-            faltantes: materiasFaltantes.length,
-            porcentajeCompletado,
-            promedio,
-            materiasAprobadas,
-            materiasPromocionadas,
-            materiasRegularizadas,
-            materiasCursando,
-            materiasFaltantes
-          }
-        })
-      )
+      const porcentajeCompletado = (((materiasAprobadas.length + materiasPromocionadas.length) / todasLasMaterias.length) * 100).toFixed(2)
+
+      return {
+        carrera,
+        aprobadas: materiasAprobadas.length,
+        promocionadas: materiasPromocionadas.length,
+        regularizadas: materiasRegularizadas.length,
+        cursando: materiasCursando.length,
+        faltantes: materiasFaltantes.length,
+        porcentajeCompletado,
+        promedio,
+        materiasAprobadas,
+        materiasPromocionadas,
+        materiasRegularizadas,
+        materiasCursando,
+        materiasFaltantes
+      }
     }
   },
   Mutation: {
