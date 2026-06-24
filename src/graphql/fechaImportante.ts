@@ -1,9 +1,10 @@
 import { FechaImportante } from "../database/models/FechaImportante.js"
 import { validateFechaImportanteInput } from "../validators/fechaImportanteValidator.js"
+import { getNombreMes } from "../helpers/meses.js"
 
 export const typeDefs = `
   type FechasPorMes {
-    mes: Int!      
+    mes: String!      
     anio: Int!
     fechas: [FechaImportante!]!
   }
@@ -54,7 +55,7 @@ export const resolvers = {
       }).sort({ fechaInicio: 1 })
 
       // Agrupar por año-mes
-      const grupos = new Map<string, { anio: number; mes: number; fechas: typeof fechas }>()
+      const grupos = new Map<string, { anio: number; mes: string; fechas: typeof fechas }>()
 
       for (const fecha of fechas) {
         const anio = fecha.fechaInicio.getFullYear()
@@ -62,7 +63,7 @@ export const resolvers = {
         const key = `${anio}-${mes}`
 
         if (!grupos.has(key)) {
-          grupos.set(key, { anio, mes, fechas: [] })
+          grupos.set(key, { anio, mes: getNombreMes(mes), fechas: [] })
         }
         grupos.get(key)!.fechas.push(fecha)
       }
