@@ -11,6 +11,12 @@ export const typeDefs = `
     FIN_CURSADA
   }
 
+  type FechasPorMes {
+    mes: Int!      
+    anio: Int!
+    fechas: [FechaImportante!]!
+  }
+
   type FechaImportante {
     id: ID!
     tipo: TipoFecha!
@@ -21,6 +27,7 @@ export const typeDefs = `
 
   type Query {
     fechasImportantes: [FechaImportante]
+    fechasImportantesPorMes: [FechasPorMes]
   }
 
   type Mutation {
@@ -44,9 +51,34 @@ export const resolvers = {
           {fechaFin: null, fechaInicio: { $gte: hoy }}
         ]
       }).sort({fechaInicio: 1})
+    },
+    fechasImportantesPorMes: async () => {
+      const hoy = new Date()
+
+      const fechas = await FechaImportante.find({
+        $or: [
+          { fechaFin: { $gte: hoy } },
+          { fechaFin: null, fechaInicio: { $gte: hoy } }
+        ]
+      }).sort({ fechaInicio: 1 })
+
+      // Agrupar por año-mes
+      const grupos = new Map<string, { anio: number; mes: number; fechas: typeof fechas }>()
+
+      for (const fecha of fechas) {
+        const anio = fecha.fechaInicio.getFullYear()
+        const mes = fecha.fechaInicio.getMonth() + 1  // getMonth() es 0-indexed
+        const key = `${anio}-${mes}`
+
+        if (!grupos.has(key)) {
+          grupos.set(key, { anio, mes, fechas: [] })
+        }
+        grupos.get(key)!.fechas.push(fecha)
+      }
+
+      return Array.from(grupos.values())
     }
   },
-
   Mutation: {
     crearFechaImportante: async (_root: undefined, args: unknown) => {
 
